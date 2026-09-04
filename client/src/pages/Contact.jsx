@@ -88,15 +88,15 @@ const Contact = () => {
     }
   };
 
-  /* ── Shared dark input style ── */
+  /* ── Theme-aware input style ── */
   const inputStyle = {
     width: '100%', height: 52, padding: '0 20px', borderRadius: 12,
-    background: '#1d2026', border: '1px solid rgba(67,70,85,0.5)',
-    color: '#e0e2eb', fontSize: 15, outline: 'none',
-    fontFamily: 'Inter, sans-serif', transition: 'border-color 0.2s',
+    background: 'var(--bg-input)', border: '1px solid var(--border-color)',
+    color: 'var(--text-main)', fontSize: 15, outline: 'none',
+    fontFamily: 'Inter, sans-serif', transition: 'border-color 0.2s, background-color 0.3s',
   };
   const labelStyle = {
-    fontSize: 11, fontWeight: 600, color: '#8d90a0',
+    fontSize: 11, fontWeight: 600, color: 'var(--text-muted)',
     letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6, display: 'block',
   };
 
@@ -104,8 +104,8 @@ const Contact = () => {
     <>
       <main>
         {/* ── Hero ── */}
-        <section className="relative overflow-hidden" style={{ background: '#10131a', padding: '96px 32px 64px' }}>
-          <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: 600, height: 300, borderRadius: '50%', background: 'rgba(37,99,235,0.15)', filter: 'blur(100px)', pointerEvents: 'none' }} />
+        <section className="relative overflow-hidden transition-colors duration-300" style={{ background: 'var(--bg-main)', padding: '96px 32px 64px' }}>
+          <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: 600, height: 300, borderRadius: '50%', background: 'var(--orb-primary)', filter: 'blur(100px)', pointerEvents: 'none' }} />
           <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
 
           <div className="relative z-10 max-w-container-max mx-auto text-center">
@@ -115,10 +115,10 @@ const Contact = () => {
               variants={popIn}
               custom={0}
               className="inline-flex items-center gap-2 rounded-full mb-6"
-              style={{ padding: '6px 16px', background: '#1d2026', border: '1px solid rgba(67,70,85,0.5)' }}
+              style={{ padding: '6px 16px', background: 'var(--bg-pill)', border: '1px solid var(--border-color)' }}
             >
-              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#7bd0ff' }} />
-              <span style={{ fontSize: 11, fontWeight: 600, color: '#a4c9ff', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Get In Touch</span>
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#2563eb' }} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: '#2563eb', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Get In Touch</span>
             </motion.div>
 
             <motion.h1
@@ -126,7 +126,7 @@ const Contact = () => {
               animate="visible"
               variants={fadeUp}
               custom={0.12}
-              style={{ fontSize: 'clamp(36px,5vw,64px)', fontWeight: 700, letterSpacing: '-0.03em', color: '#e0e2eb', marginBottom: 20, lineHeight: 1.08 }}
+              style={{ fontSize: 'clamp(36px,5vw,64px)', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--text-main)', marginBottom: 20, lineHeight: 1.08 }}
             >
               Let's Build Something <span className="text-gradient">Great</span> Together
             </motion.h1>
@@ -136,7 +136,7 @@ const Contact = () => {
               animate="visible"
               variants={fadeUp}
               custom={0.24}
-              style={{ fontSize: 18, lineHeight: 1.65, color: '#8d90a0', maxWidth: 520, margin: '0 auto' }}
+              style={{ fontSize: 18, lineHeight: 1.65, color: 'var(--text-muted)', maxWidth: 520, margin: '0 auto' }}
             >
               Have an idea? We're ready to transform it into a reliable technology solution. Reach out today.
             </motion.p>
@@ -144,7 +144,7 @@ const Contact = () => {
         </section>
 
         {/* ── Split Contact Section ── */}
-        <section style={{ background: '#10131a', padding: '0 32px 80px' }}>
+        <section style={{ background: 'var(--bg-main)', padding: '0 32px 80px' }} className="transition-colors duration-300">
           <div className="max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
 
             {/* ── Contact Form ── */}
@@ -154,38 +154,38 @@ const Contact = () => {
               viewport={VP}
               variants={popIn}
               className="rounded-[24px]"
-              style={{ padding: '48px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}
+              style={{ padding: '48px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 8px 32px var(--shadow-color)' }}
             >
-              <h2 style={{ fontSize: 22, fontWeight: 600, color: '#e0e2eb', marginBottom: 32, letterSpacing: '-0.01em' }}>Send us a Message</h2>
+              <h2 style={{ fontSize: 22, fontWeight: 600, color: 'var(--text-main)', marginBottom: 32, letterSpacing: '-0.01em' }}>Send us a Message</h2>
               <form className="space-y-5" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
                     <label style={labelStyle}>Full Name</label>
                     <input name="name" value={formData.name} onChange={handleChange} style={inputStyle} placeholder="John Doe" type="text"
-                      onFocus={(e) => { e.target.style.borderColor = 'rgba(180,197,255,0.4)'; }}
-                      onBlur={(e) => { e.target.style.borderColor = 'rgba(67,70,85,0.5)'; }}
+                      onFocus={(e) => { e.target.style.borderColor = '#2563eb'; }}
+                      onBlur={(e) => { e.target.style.borderColor = 'var(--border-color)'; }}
                     />
                   </div>
                   <div>
                     <label style={labelStyle}>Email Address</label>
                     <input name="email" value={formData.email} onChange={handleChange} style={inputStyle} placeholder="john@example.com" type="email"
-                      onFocus={(e) => { e.target.style.borderColor = 'rgba(180,197,255,0.4)'; }}
-                      onBlur={(e) => { e.target.style.borderColor = 'rgba(67,70,85,0.5)'; }}
+                      onFocus={(e) => { e.target.style.borderColor = '#2563eb'; }}
+                      onBlur={(e) => { e.target.style.borderColor = 'var(--border-color)'; }}
                     />
                   </div>
                 </div>
                 <div>
                   <label style={labelStyle}>Phone Number</label>
                   <input name="phone" value={formData.phone} onChange={handleChange} style={inputStyle} placeholder="+91 98765 43210" type="tel"
-                    onFocus={(e) => { e.target.style.borderColor = 'rgba(180,197,255,0.4)'; }}
-                    onBlur={(e) => { e.target.style.borderColor = 'rgba(67,70,85,0.5)'; }}
+                    onFocus={(e) => { e.target.style.borderColor = '#2563eb'; }}
+                    onBlur={(e) => { e.target.style.borderColor = 'var(--border-color)'; }}
                   />
                 </div>
                 <div>
                   <label style={labelStyle}>Subject</label>
                   <input name="subject" value={formData.subject} onChange={handleChange} style={inputStyle} placeholder="Inquiry about custom development" type="text"
-                    onFocus={(e) => { e.target.style.borderColor = 'rgba(180,197,255,0.4)'; }}
-                    onBlur={(e) => { e.target.style.borderColor = 'rgba(67,70,85,0.5)'; }}
+                    onFocus={(e) => { e.target.style.borderColor = '#2563eb'; }}
+                    onBlur={(e) => { e.target.style.borderColor = 'var(--border-color)'; }}
                   />
                 </div>
                 <div>
@@ -194,15 +194,15 @@ const Contact = () => {
                     name="message" value={formData.message} onChange={handleChange}
                     rows={5} placeholder="Tell us about your project or inquiry..."
                     style={{ ...inputStyle, height: 'auto', padding: '16px 20px', resize: 'none', lineHeight: 1.65 }}
-                    onFocus={(e) => { e.target.style.borderColor = 'rgba(180,197,255,0.4)'; }}
-                    onBlur={(e) => { e.target.style.borderColor = 'rgba(67,70,85,0.5)'; }}
+                    onFocus={(e) => { e.target.style.borderColor = '#2563eb'; }}
+                    onBlur={(e) => { e.target.style.borderColor = 'var(--border-color)'; }}
                   />
                 </div>
                 <motion.button
                   whileTap={{ scale: 0.97 }}
                   type="submit"
                   disabled={isLoading}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-300"
+                  className="w-full flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-300 cursor-pointer"
                   style={{
                     padding: '16px', fontSize: 15,
                     background: isLoading ? 'rgba(37,99,235,0.5)' : '#2563eb',
@@ -225,8 +225,8 @@ const Contact = () => {
               className="flex flex-col gap-6"
             >
               {/* Info card */}
-              <motion.div variants={fadeUp} className="rounded-[24px]" style={{ padding: '40px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}>
-                <h2 style={{ fontSize: 22, fontWeight: 600, color: '#e0e2eb', marginBottom: 28, letterSpacing: '-0.01em' }}>Contact Information</h2>
+              <motion.div variants={fadeUp} className="rounded-[24px]" style={{ padding: '40px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 8px 32px var(--shadow-color)' }}>
+                <h2 style={{ fontSize: 22, fontWeight: 600, color: 'var(--text-main)', marginBottom: 28, letterSpacing: '-0.01em' }}>Contact Information</h2>
                 <div className="space-y-6">
                   {[
                     { icon: 'mail', label: 'Email Us', value: 'rogerexindia@gmail.com', href: 'mailto:rogerexindia@gmail.com' },
@@ -235,31 +235,31 @@ const Contact = () => {
                     <div key={label} className="flex items-start gap-4">
                       <div style={{
                         width: 44, height: 44, borderRadius: 12, flexShrink: 0,
-                        background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(180,197,255,0.12)',
+                        background: 'rgba(37,99,235,0.12)', border: '1px solid var(--border-color)',
                         display: 'flex', items: 'center', justifyContent: 'center',
                       }}>
-                        <span className="material-symbols-outlined" style={{ fontSize: 20, color: '#b4c5ff' }}>{icon}</span>
+                        <span className="material-symbols-outlined" style={{ fontSize: 20, color: '#2563eb' }}>{icon}</span>
                       </div>
                       <div>
-                        <p style={{ fontSize: 11, fontWeight: 600, color: '#8d90a0', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 4 }}>{label}</p>
+                        <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 4 }}>{label}</p>
                         {href
-                          ? <a href={href} style={{ fontSize: 16, color: '#e0e2eb', transition: 'color 0.2s' }}
-                              onMouseEnter={(e) => (e.currentTarget.style.color = '#b4c5ff')}
-                              onMouseLeave={(e) => (e.currentTarget.style.color = '#e0e2eb')}>
+                          ? <a href={href} style={{ fontSize: 16, color: 'var(--text-main)', transition: 'color 0.2s' }}
+                              onMouseEnter={(e) => (e.currentTarget.style.color = '#2563eb')}
+                              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-main)')}>
                               {value}
                             </a>
-                          : <p style={{ fontSize: 16, color: '#e0e2eb' }}>{value}</p>
+                          : <p style={{ fontSize: 16, color: 'var(--text-main)' }}>{value}</p>
                         }
                       </div>
                     </div>
                   ))}
 
                   {/* Divider */}
-                  <div style={{ height: 1, background: 'rgba(67,70,85,0.4)', margin: '8px 0' }} />
+                  <div style={{ height: 1, background: 'var(--border-color-subtle)', margin: '8px 0' }} />
 
                   {/* Social */}
                   <div>
-                    <p style={{ fontSize: 11, fontWeight: 600, color: '#8d90a0', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 12 }}>Follow Us</p>
+                    <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 12 }}>Follow Us</p>
                     <div className="flex gap-3">
                       {[
                         { icon: <Globe className="w-4 h-4" />, label: 'Website' },
@@ -271,20 +271,20 @@ const Contact = () => {
                           href="#"
                           aria-label={label}
                           whileTap={{ scale: 0.92 }}
-                          className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200"
+                          className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer"
                           style={{
-                            background: '#1d2026', color: '#8d90a0',
-                            border: '1px solid rgba(67,70,85,0.4)',
+                            background: 'var(--bg-pill)', color: 'var(--text-muted)',
+                            border: '1px solid var(--border-color)',
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'rgba(180,197,255,0.1)';
-                            e.currentTarget.style.color = '#b4c5ff';
-                            e.currentTarget.style.borderColor = 'rgba(180,197,255,0.3)';
+                            e.currentTarget.style.background = '#2563eb';
+                            e.currentTarget.style.color = '#ffffff';
+                            e.currentTarget.style.borderColor = '#2563eb';
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.background = '#1d2026';
-                            e.currentTarget.style.color = '#8d90a0';
-                            e.currentTarget.style.borderColor = 'rgba(67,70,85,0.4)';
+                            e.currentTarget.style.background = 'var(--bg-pill)';
+                            e.currentTarget.style.color = 'var(--text-muted)';
+                            e.currentTarget.style.borderColor = 'var(--border-color)';
                           }}
                         >
                           {icon}
@@ -299,7 +299,7 @@ const Contact = () => {
               <motion.div
                 variants={fadeUp}
                 className="flex-grow rounded-[24px] overflow-hidden relative group"
-                style={{ minHeight: 200, background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}
+                style={{ minHeight: 200, background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 8px 32px var(--shadow-color)' }}
               >
                 <div
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
@@ -314,7 +314,7 @@ const Contact = () => {
                     <h4 style={{ fontSize: 15, fontWeight: 600, color: '#e0e2eb' }}>Headquarters</h4>
                     <p style={{ fontSize: 13, color: '#8d90a0' }}>Bengaluru, India</p>
                   </div>
-                  <a href="#" style={{ fontSize: 12, fontWeight: 700, color: '#b4c5ff', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                  <a href="#" style={{ fontSize: 12, fontWeight: 700, color: '#60A5FA', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
                     GET DIRECTIONS
                   </a>
                 </div>
@@ -324,7 +324,7 @@ const Contact = () => {
         </section>
 
         {/* ── FAQ Section ── */}
-        <section style={{ background: '#0b0e14', padding: '80px 32px', borderTop: '1px solid rgba(67,70,85,0.3)' }}>
+        <section style={{ background: 'var(--bg-alt)', padding: '80px 32px', borderTop: '1px solid var(--border-color-subtle)' }} className="transition-colors duration-300">
           <div style={{ maxWidth: 720, margin: '0 auto' }}>
             <motion.div
               initial="hidden"
@@ -333,10 +333,10 @@ const Contact = () => {
               variants={fadeUp}
               className="text-center mb-16"
             >
-              <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{ padding: '6px 16px', background: '#191c22', border: '1px solid rgba(67,70,85,0.5)' }}>
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#a4c9ff', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Common Questions</span>
+              <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{ padding: '6px 16px', background: 'var(--bg-pill)', border: '1px solid var(--border-color)' }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: '#2563eb', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Common Questions</span>
               </div>
-              <h2 style={{ fontSize: 'clamp(28px,4vw,40px)', fontWeight: 600, letterSpacing: '-0.02em', color: '#e0e2eb' }}>Frequently Asked Questions</h2>
+              <h2 style={{ fontSize: 'clamp(28px,4vw,40px)', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-main)' }}>Frequently Asked Questions</h2>
             </motion.div>
 
             <motion.div
@@ -352,22 +352,23 @@ const Contact = () => {
                   variants={fadeUp}
                   className="rounded-2xl overflow-hidden transition-all duration-200"
                   style={{
-                    background: '#191c22',
-                    border: openFaq === id ? '1px solid rgba(180,197,255,0.25)' : '1px solid rgba(67,70,85,0.4)',
+                    background: 'var(--bg-card)',
+                    border: openFaq === id ? '1px solid #2563eb' : '1px solid var(--border-color)',
+                    boxShadow: '0 4px 16px var(--shadow-color)',
                   }}
                 >
                   <button
-                    className="w-full flex justify-between items-center text-left"
-                    style={{ padding: '20px 24px', cursor: 'pointer', background: 'transparent', border: 'none' }}
+                    className="w-full flex justify-between items-center text-left cursor-pointer"
+                    style={{ padding: '20px 24px', background: 'transparent', border: 'none' }}
                     onClick={() => setOpenFaq(openFaq === id ? null : id)}
                     aria-expanded={openFaq === id}
                   >
-                    <span style={{ fontSize: 16, fontWeight: 600, color: openFaq === id ? '#b4c5ff' : '#e0e2eb', paddingRight: 24, lineHeight: 1.5, transition: 'color 0.2s' }}>
+                    <span style={{ fontSize: 16, fontWeight: 600, color: openFaq === id ? '#2563eb' : 'var(--text-main)', paddingRight: 24, lineHeight: 1.5, transition: 'color 0.2s' }}>
                       {q}
                     </span>
                     <ChevronDown
                       className="w-5 h-5 shrink-0 transition-transform duration-300"
-                      style={{ color: '#8d90a0', transform: openFaq === id ? 'rotate(180deg)' : 'none' }}
+                      style={{ color: 'var(--text-muted)', transform: openFaq === id ? 'rotate(180deg)' : 'none' }}
                     />
                   </button>
                   <AnimatePresence>
@@ -378,7 +379,7 @@ const Contact = () => {
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.35, ease: EASE }}
                       >
-                        <p style={{ padding: '0 24px 20px', fontSize: 15, lineHeight: 1.7, color: '#8d90a0' }}>{a}</p>
+                        <p style={{ padding: '0 24px 20px', fontSize: 15, lineHeight: 1.7, color: 'var(--text-muted)' }}>{a}</p>
                       </motion.div>
                     )}
                   </AnimatePresence>

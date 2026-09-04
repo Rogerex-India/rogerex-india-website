@@ -11,11 +11,12 @@ const CallToAction = ({
   return (
     <section style={{ padding: '0 32px 120px' }} className={sectionClassName}>
       <div
-        className="max-w-container-max mx-auto relative overflow-hidden rounded-[32px] text-center"
+        className="max-w-container-max mx-auto relative overflow-hidden rounded-[32px] text-center transition-colors duration-300"
         style={{
-          background: 'linear-gradient(135deg, #1d2026 0%, #191c22 100%)',
-          border: '1px solid rgba(67,70,85,0.5)',
+          background: 'var(--cta-gradient)',
+          border: '1px solid var(--border-color)',
           padding: '80px 48px',
+          boxShadow: '0 12px 40px var(--shadow-color)',
         }}
       >
         {/* Ambient orbs inside CTA */}
@@ -29,7 +30,7 @@ const CallToAction = ({
                 width: 300,
                 height: 200,
                 borderRadius: '50%',
-                background: 'rgba(37,99,235,0.2)',
+                background: 'var(--orb-primary)',
                 filter: 'blur(80px)',
                 pointerEvents: 'none',
               }}
@@ -42,7 +43,7 @@ const CallToAction = ({
                 width: 280,
                 height: 200,
                 borderRadius: '50%',
-                background: 'rgba(0,117,159,0.15)',
+                background: 'var(--orb-secondary)',
                 filter: 'blur(80px)',
                 pointerEvents: 'none',
               }}
@@ -58,7 +59,7 @@ const CallToAction = ({
             left: 0,
             right: 0,
             height: 1,
-            background: 'linear-gradient(90deg, transparent, rgba(180,197,255,0.3), transparent)',
+            background: 'linear-gradient(90deg, transparent, rgba(37,99,235,0.3), transparent)',
           }}
         />
 
@@ -68,7 +69,7 @@ const CallToAction = ({
               fontSize: 'clamp(28px, 4vw, 44px)',
               fontWeight: 600,
               letterSpacing: '-0.02em',
-              color: '#e0e2eb',
+              color: 'var(--text-main)',
               marginBottom: 16,
             }}
           >
@@ -79,7 +80,7 @@ const CallToAction = ({
               style={{
                 fontSize: 18,
                 lineHeight: 1.65,
-                color: '#8d90a0',
+                color: 'var(--text-muted)',
                 maxWidth: '560px',
                 margin: '0 auto 40px',
               }}

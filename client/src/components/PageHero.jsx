@@ -22,10 +22,10 @@ const popIn = {
 const PageHero = ({ subtitle, title, highlightText, description }) => {
   return (
     <section
-      className="relative overflow-hidden"
+      className="relative overflow-hidden transition-colors duration-300"
       style={{
         padding: '96px 32px 80px',
-        background: '#10131a',
+        background: 'var(--bg-main)',
       }}
     >
       {/* Ambient orbs */}
@@ -38,7 +38,7 @@ const PageHero = ({ subtitle, title, highlightText, description }) => {
           width: 600,
           height: 300,
           borderRadius: '50%',
-          background: 'rgba(37,99,235,0.15)',
+          background: 'var(--orb-primary)',
           filter: 'blur(100px)',
           pointerEvents: 'none',
         }}
@@ -51,7 +51,7 @@ const PageHero = ({ subtitle, title, highlightText, description }) => {
           width: 400,
           height: 300,
           borderRadius: '50%',
-          background: 'rgba(0,117,159,0.1)',
+          background: 'var(--orb-secondary)',
           filter: 'blur(120px)',
           pointerEvents: 'none',
         }}
@@ -76,20 +76,20 @@ const PageHero = ({ subtitle, title, highlightText, description }) => {
             className="inline-flex items-center gap-2 rounded-full mb-6"
             style={{
               padding: '6px 16px',
-              background: 'rgba(27,32,38,0.8)',
-              border: '1px solid rgba(67,70,85,0.5)',
+              background: 'var(--bg-pill)',
+              border: '1px solid var(--border-color)',
               backdropFilter: 'blur(12px)',
             }}
           >
             <span
               className="w-1.5 h-1.5 rounded-full animate-pulse"
-              style={{ background: '#7bd0ff' }}
+              style={{ background: '#2563eb' }}
             />
             <span
               style={{
                 fontSize: 12,
                 fontWeight: 600,
-                color: '#a4c9ff',
+                color: 'var(--text-accent)',
                 letterSpacing: '0.08em',
                 textTransform: 'uppercase',
               }}
@@ -109,7 +109,7 @@ const PageHero = ({ subtitle, title, highlightText, description }) => {
             fontWeight: 700,
             lineHeight: 1.1,
             letterSpacing: '-0.025em',
-            color: '#e0e2eb',
+            color: 'var(--text-main)',
             marginBottom: 24,
           }}
         >
@@ -128,7 +128,7 @@ const PageHero = ({ subtitle, title, highlightText, description }) => {
             style={{
               fontSize: 18,
               lineHeight: 1.65,
-              color: '#8d90a0',
+              color: 'var(--text-muted)',
               maxWidth: '600px',
               margin: '0 auto',
             }}

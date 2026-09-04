@@ -26,8 +26,9 @@ const Footer = () => {
   return (
     <footer
       style={{
-        background: '#0b0e14',
-        borderTop: '1px solid rgba(67,70,85,0.4)',
+        background: 'var(--bg-alt)',
+        borderTop: '1px solid var(--border-color-subtle)',
+        transition: 'background-color 0.3s ease',
       }}
     >
       {/* Main footer grid */}
@@ -42,12 +43,12 @@ const Footer = () => {
               <img alt="Logo" className="h-8 w-auto object-contain" src={logo} />
               <span
                 className="font-semibold tracking-tight"
-                style={{ fontSize: 20, color: '#e0e2eb' }}
+                style={{ fontSize: 20, color: 'var(--text-main)' }}
               >
                 Rogerex India
               </span>
             </Link>
-            <p style={{ fontSize: 15, lineHeight: 1.7, color: '#8d90a0', maxWidth: 300 }}>
+            <p style={{ fontSize: 15, lineHeight: 1.7, color: 'var(--text-muted)', maxWidth: 300 }}>
               Leading the digital transformation journey for enterprises globally through
               innovative, scalable, and reliable tech solutions.
             </p>
@@ -87,19 +88,19 @@ const Footer = () => {
                   aria-label={label}
                   className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200"
                   style={{
-                    background: '#1d2026',
-                    color: '#8d90a0',
-                    border: '1px solid rgba(67,70,85,0.4)',
+                    background: 'var(--bg-container)',
+                    color: 'var(--text-muted)',
+                    border: '1px solid var(--border-color)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(180,197,255,0.1)';
-                    e.currentTarget.style.color = '#b4c5ff';
-                    e.currentTarget.style.borderColor = 'rgba(180,197,255,0.3)';
+                    e.currentTarget.style.background = '#2563eb';
+                    e.currentTarget.style.color = '#ffffff';
+                    e.currentTarget.style.borderColor = '#2563eb';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#1d2026';
-                    e.currentTarget.style.color = '#8d90a0';
-                    e.currentTarget.style.borderColor = 'rgba(67,70,85,0.4)';
+                    e.currentTarget.style.background = 'var(--bg-container)';
+                    e.currentTarget.style.color = 'var(--text-muted)';
+                    e.currentTarget.style.borderColor = 'var(--border-color)';
                   }}
                 >
                   {icon}
@@ -113,7 +114,7 @@ const Footer = () => {
             <div key={title} className="md:col-span-2">
               <h5
                 className="font-semibold mb-5 uppercase tracking-widest"
-                style={{ fontSize: 11, color: '#8d90a0', letterSpacing: '0.1em' }}
+                style={{ fontSize: 11, color: 'var(--text-muted)', letterSpacing: '0.1em' }}
               >
                 {title}
               </h5>
@@ -122,9 +123,9 @@ const Footer = () => {
                   <li key={label}>
                     <Link
                       to={path}
-                      style={{ fontSize: 14, color: '#c3c6d7', transition: 'color 0.2s' }}
-                      onMouseEnter={(e) => (e.currentTarget.style.color = '#b4c5ff')}
-                      onMouseLeave={(e) => (e.currentTarget.style.color = '#c3c6d7')}
+                      style={{ fontSize: 14, color: 'var(--text-main)', transition: 'color 0.2s' }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = '#2563eb')}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-main)')}
                     >
                       {label}
                     </Link>
@@ -138,7 +139,7 @@ const Footer = () => {
           <div className="md:col-span-2">
             <h5
               className="font-semibold mb-5 uppercase tracking-widest"
-              style={{ fontSize: 11, color: '#8d90a0', letterSpacing: '0.1em' }}
+              style={{ fontSize: 11, color: 'var(--text-muted)', letterSpacing: '0.1em' }}
             >
               Contact
             </h5>
@@ -146,15 +147,15 @@ const Footer = () => {
               <li>
                 <a
                   href="mailto:rogerexindia@gmail.com"
-                  style={{ fontSize: 14, color: '#c3c6d7', transition: 'color 0.2s' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#b4c5ff')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = '#c3c6d7')}
+                  style={{ fontSize: 14, color: 'var(--text-main)', transition: 'color 0.2s' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#2563eb')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-main)')}
                 >
                   rogerexindia@gmail.com
                 </a>
               </li>
-              <li style={{ fontSize: 14, color: '#8d90a0' }}>Bengaluru, Karnataka</li>
-              <li style={{ fontSize: 14, color: '#8d90a0' }}>India</li>
+              <li style={{ fontSize: 14, color: 'var(--text-muted)' }}>Bengaluru, Karnataka</li>
+              <li style={{ fontSize: 14, color: 'var(--text-muted)' }}>India</li>
             </ul>
           </div>
         </div>
@@ -163,22 +164,22 @@ const Footer = () => {
       {/* Bottom bar */}
       <div
         style={{
-          borderTop: '1px solid rgba(67,70,85,0.3)',
+          borderTop: '1px solid var(--border-color-subtle)',
           padding: '20px 32px',
         }}
       >
         <div
           className="max-w-container-max mx-auto flex flex-col sm:flex-row items-center justify-between gap-4"
         >
-          <p style={{ fontSize: 13, color: '#8d90a0' }}>
+          <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>
             © 2026 Rogerex India. All rights reserved.
           </p>
           <div className="flex items-center gap-2">
             <span
               className="w-1.5 h-1.5 rounded-full animate-pulse"
-              style={{ background: '#7bd0ff' }}
+              style={{ background: '#2563eb' }}
             />
-            <span style={{ fontSize: 12, color: '#8d90a0' }}>
+            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
               Systems Operational
             </span>
           </div>

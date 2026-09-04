@@ -2,8 +2,8 @@ import React from 'react';
 
 const ServiceCard = ({ icon, title, description, variant = 'page', className = '' }) => {
   const cardStyle = {
-    background: '#191c22',
-    border: '1px solid rgba(67,70,85,0.4)',
+    background: 'var(--bg-card)',
+    border: '1px solid var(--border-color)',
     borderRadius: 20,
     padding: variant === 'home' ? 32 : 40,
     transition: 'all 0.3s ease',
@@ -20,8 +20,8 @@ const ServiceCard = ({ icon, title, description, variant = 'page', className = '
     justifyContent: 'center',
     marginBottom: 20,
     background: 'rgba(37,99,235,0.12)',
-    color: '#b4c5ff',
-    border: '1px solid rgba(180,197,255,0.12)',
+    color: '#2563eb',
+    border: '1px solid var(--border-color)',
     transition: 'all 0.3s ease',
   };
 
@@ -30,23 +30,23 @@ const ServiceCard = ({ icon, title, description, variant = 'page', className = '
       className={`group ${className}`}
       style={cardStyle}
       onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = 'rgba(180,197,255,0.25)';
+        e.currentTarget.style.borderColor = 'rgba(37,99,235,0.4)';
         e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = '0 16px 48px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(180,197,255,0.1)';
+        e.currentTarget.style.boxShadow = '0 16px 48px -12px var(--shadow-color)';
         const iconWrap = e.currentTarget.querySelector('.icon-wrap');
         if (iconWrap) {
           iconWrap.style.background = 'rgba(37,99,235,0.2)';
-          iconWrap.style.borderColor = 'rgba(180,197,255,0.25)';
+          iconWrap.style.borderColor = '#2563eb';
         }
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = 'rgba(67,70,85,0.4)';
+        e.currentTarget.style.borderColor = 'var(--border-color)';
         e.currentTarget.style.transform = 'translateY(0)';
         e.currentTarget.style.boxShadow = 'none';
         const iconWrap = e.currentTarget.querySelector('.icon-wrap');
         if (iconWrap) {
           iconWrap.style.background = 'rgba(37,99,235,0.12)';
-          iconWrap.style.borderColor = 'rgba(180,197,255,0.12)';
+          iconWrap.style.borderColor = 'var(--border-color)';
         }
       }}
     >
@@ -59,7 +59,7 @@ const ServiceCard = ({ icon, title, description, variant = 'page', className = '
           transform: 'translateX(-50%)',
           width: '60%',
           height: 1,
-          background: 'linear-gradient(90deg, transparent, rgba(180,197,255,0.15), transparent)',
+          background: 'linear-gradient(90deg, transparent, rgba(37,99,235,0.25), transparent)',
         }}
       />
 
@@ -71,7 +71,7 @@ const ServiceCard = ({ icon, title, description, variant = 'page', className = '
         style={{
           fontSize: 20,
           fontWeight: 600,
-          color: '#e0e2eb',
+          color: 'var(--text-main)',
           marginBottom: 12,
           letterSpacing: '-0.01em',
         }}
@@ -82,7 +82,7 @@ const ServiceCard = ({ icon, title, description, variant = 'page', className = '
         style={{
           fontSize: 15,
           lineHeight: 1.65,
-          color: '#8d90a0',
+          color: 'var(--text-muted)',
         }}
       >
         {description}

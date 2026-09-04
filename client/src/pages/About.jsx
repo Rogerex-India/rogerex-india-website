@@ -56,16 +56,13 @@ const leadership = [
   { name: 'Siddharth Rao', role: 'Director of Operations',    img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=600' },
 ];
 
-/* ═══════════════════════════════════════════════════════════════════
-   ABOUT COMPONENT
-═══════════════════════════════════════════════════════════════════ */
 const About = () => (
   <>
     <main>
-      {/* ══ HERO — animate on mount ══════════════════════════════ */}
-      <section className="relative overflow-hidden" style={{ background: '#10131a', padding: '96px 32px 64px' }}>
-        <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: 600, height: 350, borderRadius: '50%', background: 'rgba(37,99,235,0.15)', filter: 'blur(120px)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: -80, right: -80, width: 400, height: 300, borderRadius: '50%', background: 'rgba(0,117,159,0.1)', filter: 'blur(120px)', pointerEvents: 'none' }} />
+      {/* ══ HERO ════════════════════════════════════════════════ */}
+      <section className="relative overflow-hidden transition-colors duration-300" style={{ background: 'var(--bg-main)', padding: '96px 32px 64px' }}>
+        <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: 600, height: 350, borderRadius: '50%', background: 'var(--orb-primary)', filter: 'blur(120px)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: -80, right: -80, width: 400, height: 300, borderRadius: '50%', background: 'var(--orb-secondary)', filter: 'blur(120px)', pointerEvents: 'none' }} />
         <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
 
         <motion.div
@@ -76,26 +73,26 @@ const About = () => (
         >
           {/* Badge */}
           <motion.div variants={fadeIn}>
-            <div className="inline-flex items-center gap-2 rounded-full mb-6" style={{ padding: '6px 16px', background: '#1d2026', border: '1px solid rgba(67,70,85,0.5)' }}>
-              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#7bd0ff' }} />
-              <span style={{ fontSize: 11, fontWeight: 600, color: '#a4c9ff', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Who We Are</span>
+            <div className="inline-flex items-center gap-2 rounded-full mb-6" style={{ padding: '6px 16px', background: 'var(--bg-pill)', border: '1px solid var(--border-color)' }}>
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#2563eb' }} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: '#2563eb', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Who We Are</span>
             </div>
           </motion.div>
 
           {/* Headline */}
-          <motion.h1 variants={fadeUp} style={{ fontSize: 'clamp(36px,5vw,64px)', fontWeight: 700, letterSpacing: '-0.03em', color: '#e0e2eb', marginBottom: 24, lineHeight: 1.08 }}>
+          <motion.h1 variants={fadeUp} style={{ fontSize: 'clamp(36px,5vw,64px)', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--text-main)', marginBottom: 24, lineHeight: 1.08 }}>
             Building <span className="text-gradient">Digital Excellence</span>
           </motion.h1>
 
           {/* Description */}
-          <motion.p variants={fadeUp} style={{ fontSize: 18, lineHeight: 1.65, color: '#8d90a0', maxWidth: 580 }}>
+          <motion.p variants={fadeUp} style={{ fontSize: 18, lineHeight: 1.65, color: 'var(--text-muted)', maxWidth: 580 }}>
             RogerEx is a modern IT services company focused on building innovative digital solutions for startups, businesses, and enterprises. We transform ideas into reliable technology solutions.
           </motion.p>
         </motion.div>
       </section>
 
       {/* ══ OUR STORY — slide from sides ════════════════════════ */}
-      <section style={{ background: '#10131a', padding: '80px 32px' }}>
+      <section style={{ background: 'var(--bg-main)', padding: '80px 32px' }} className="transition-colors duration-300">
         <motion.div
           className="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch"
           initial="hidden" whileInView="show" viewport={VP}
@@ -105,31 +102,31 @@ const About = () => (
           <motion.div
             variants={slideLeft}
             className="md:col-span-7 rounded-[24px] flex flex-col justify-between"
-            style={{ padding: '48px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}
+            style={{ padding: '48px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 8px 32px var(--shadow-color)' }}
           >
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full mb-6" style={{ padding: '6px 14px', background: '#1d2026', border: '1px solid rgba(67,70,85,0.5)' }}>
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#b4c5ff', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Our Foundation</span>
+              <div className="inline-flex items-center gap-2 rounded-full mb-6" style={{ padding: '6px 14px', background: 'var(--bg-pill)', border: '1px solid var(--border-color)' }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: '#2563eb', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Our Foundation</span>
               </div>
-              <h2 style={{ fontSize: 'clamp(24px,3vw,36px)', fontWeight: 600, color: '#e0e2eb', marginBottom: 20, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
+              <h2 style={{ fontSize: 'clamp(24px,3vw,36px)', fontWeight: 600, color: 'var(--text-main)', marginBottom: 20, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
                 Driven by Technical Precision & Customer Trust
               </h2>
-              <p style={{ fontSize: 16, lineHeight: 1.75, color: '#8d90a0', marginBottom: 24 }}>
+              <p style={{ fontSize: 16, lineHeight: 1.75, color: 'var(--text-muted)', marginBottom: 24 }}>
                 Founded with a mission to bridge the gap between complex enterprise requirements and scalable software delivery, Rogerex India has grown into a trusted technology partner for global brands.
               </p>
-              <p style={{ fontSize: 16, lineHeight: 1.75, color: '#8d90a0' }}>
+              <p style={{ fontSize: 16, lineHeight: 1.75, color: 'var(--text-muted)' }}>
                 We believe that software should not only meet functional goals but also provide an exceptional user experience, rock-solid security, and future-proof adaptability.
               </p>
             </div>
-            <div className="pt-8 grid grid-cols-3 gap-4 border-t border-[rgba(67,70,85,0.3)] mt-8">
+            <div className="pt-8 grid grid-cols-3 gap-4 border-t border-[var(--border-color-subtle)] mt-8">
               {[
                 { val: '250+', label: 'Shipped Projects' },
                 { val: '50+',  label: 'Global Clients' },
                 { val: '99.9%', label: 'SLA Uptime' },
               ].map(({ val, label }) => (
                 <div key={label}>
-                  <div style={{ fontSize: 28, fontWeight: 700, color: '#b4c5ff', letterSpacing: '-0.02em' }}>{val}</div>
-                  <div style={{ fontSize: 12, color: '#8d90a0', marginTop: 4 }}>{label}</div>
+                  <div style={{ fontSize: 28, fontWeight: 700, color: '#2563eb', letterSpacing: '-0.02em' }}>{val}</div>
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>{label}</div>
                 </div>
               ))}
             </div>
@@ -139,23 +136,23 @@ const About = () => (
           <motion.div
             variants={slideRight}
             className="md:col-span-5 rounded-[24px] overflow-hidden relative group"
-            style={{ minHeight: 380, border: '1px solid rgba(67,70,85,0.4)' }}
+            style={{ minHeight: 380, border: '1px solid var(--border-color)', boxShadow: '0 8px 32px var(--shadow-color)' }}
           >
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
               style={{ backgroundImage: "url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1000')" }}
             />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(11,14,20,0.9) 0%, transparent 60%)' }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(11,14,20,0.85) 0%, transparent 60%)' }} />
             <div className="absolute bottom-8 left-8 right-8">
-              <span style={{ fontSize: 11, fontWeight: 600, color: '#7bd0ff', letterSpacing: '0.1em', textTransform: 'uppercase' }}>ENGINEERING EXCELLENCE</span>
-              <h3 style={{ fontSize: 20, fontWeight: 600, color: '#e0e2eb', marginTop: 4 }}>Where Tech Meets Purpose</h3>
+              <span style={{ fontSize: 11, fontWeight: 600, color: '#60A5FA', letterSpacing: '0.1em', textTransform: 'uppercase' }}>ENGINEERING EXCELLENCE</span>
+              <h3 style={{ fontSize: 20, fontWeight: 600, color: '#ffffff', marginTop: 4 }}>Where Tech Meets Purpose</h3>
             </div>
           </motion.div>
         </motion.div>
       </section>
 
       {/* ══ MISSION & VISION ════════════════════════════════════ */}
-      <section style={{ background: '#0b0e14', padding: '80px 32px', borderTop: '1px solid rgba(67,70,85,0.3)' }}>
+      <section style={{ background: 'var(--bg-alt)', padding: '80px 32px', borderTop: '1px solid var(--border-color-subtle)' }} className="transition-colors duration-300">
         <div className="max-w-container-max mx-auto">
           <motion.div
             className="grid grid-cols-1 md:grid-cols-2 gap-8"
@@ -166,13 +163,13 @@ const About = () => (
             <motion.div
               variants={fadeUp}
               className="rounded-[24px]"
-              style={{ padding: '44px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}
+              style={{ padding: '44px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 4px 24px var(--shadow-color)' }}
             >
-              <div style={{ width: 48, height: 48, borderRadius: 14, background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(180,197,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, color: '#b4c5ff' }}>
+              <div style={{ width: 48, height: 48, borderRadius: 14, background: 'rgba(37,99,235,0.15)', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, color: '#2563eb' }}>
                 <Rocket className="w-6 h-6" />
               </div>
-              <h3 style={{ fontSize: 24, fontWeight: 600, color: '#e0e2eb', marginBottom: 14, letterSpacing: '-0.01em' }}>Our Mission</h3>
-              <p style={{ fontSize: 16, lineHeight: 1.7, color: '#8d90a0' }}>
+              <h3 style={{ fontSize: 24, fontWeight: 600, color: 'var(--text-main)', marginBottom: 14, letterSpacing: '-0.01em' }}>Our Mission</h3>
+              <p style={{ fontSize: 16, lineHeight: 1.7, color: 'var(--text-muted)' }}>
                 To empower businesses through scalable software, cutting-edge AI integrations, and intuitive designs that drive measurable growth, operational efficiency, and lasting market impact.
               </p>
             </motion.div>
@@ -181,13 +178,13 @@ const About = () => (
             <motion.div
               variants={fadeUp}
               className="rounded-[24px]"
-              style={{ padding: '44px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}
+              style={{ padding: '44px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 4px 24px var(--shadow-color)' }}
             >
-              <div style={{ width: 48, height: 48, borderRadius: 14, background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(180,197,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, color: '#b4c5ff' }}>
+              <div style={{ width: 48, height: 48, borderRadius: 14, background: 'rgba(37,99,235,0.15)', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, color: '#2563eb' }}>
                 <Eye className="w-6 h-6" />
               </div>
-              <h3 style={{ fontSize: 24, fontWeight: 600, color: '#e0e2eb', marginBottom: 14, letterSpacing: '-0.01em' }}>Our Vision</h3>
-              <p style={{ fontSize: 16, lineHeight: 1.7, color: '#8d90a0' }}>
+              <h3 style={{ fontSize: 24, fontWeight: 600, color: 'var(--text-main)', marginBottom: 14, letterSpacing: '-0.01em' }}>Our Vision</h3>
+              <p style={{ fontSize: 16, lineHeight: 1.7, color: 'var(--text-muted)' }}>
                 To be a globally recognized IT consulting firm known for unwavering technical quality, ethical execution, and transformative digital experiences that define industry standards.
               </p>
             </motion.div>
@@ -196,14 +193,14 @@ const About = () => (
       </section>
 
       {/* ══ WHY CHOOSE US ═══════════════════════════════════════ */}
-      <section style={{ background: '#10131a', padding: '80px 32px' }}>
+      <section style={{ background: 'var(--bg-main)', padding: '80px 32px' }} className="transition-colors duration-300">
         <div className="max-w-container-max mx-auto">
           <motion.div className="text-center mb-16" initial="hidden" whileInView="show" viewport={VP} variants={fadeUp}>
-            <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{ padding: '6px 16px', background: '#1d2026', border: '1px solid rgba(67,70,85,0.5)' }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#b4c5ff' }} />
-              <span style={{ fontSize: 11, fontWeight: 600, color: '#b4c5ff', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Why Choose Us</span>
+            <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{ padding: '6px 16px', background: 'var(--bg-pill)', border: '1px solid var(--border-color)' }}>
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#2563eb' }} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: '#2563eb', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Why Choose Us</span>
             </div>
-            <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.02em', color: '#e0e2eb' }}>Built for Long-Term Success</h2>
+            <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-main)' }}>Built for Long-Term Success</h2>
           </motion.div>
 
           <motion.div
@@ -216,14 +213,14 @@ const About = () => (
                 key={title}
                 variants={fadeUp}
                 className="rounded-2xl"
-                style={{ padding: '36px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}
+                style={{ padding: '36px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 4px 20px var(--shadow-color)' }}
                 whileHover={{ y: -4, transition: { duration: 0.2 } }}
               >
-                <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(180,197,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, color: '#b4c5ff' }}>
+                <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(37,99,235,0.12)', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, color: '#2563eb' }}>
                   <Icon className="w-5 h-5" />
                 </div>
-                <h3 style={{ fontSize: 18, fontWeight: 600, color: '#e0e2eb', marginBottom: 10 }}>{title}</h3>
-                <p style={{ fontSize: 14, lineHeight: 1.7, color: '#8d90a0' }}>{desc}</p>
+                <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-main)', marginBottom: 10 }}>{title}</h3>
+                <p style={{ fontSize: 14, lineHeight: 1.7, color: 'var(--text-muted)' }}>{desc}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -231,11 +228,11 @@ const About = () => (
       </section>
 
       {/* ══ CORE VALUES ═════════════════════════════════════════ */}
-      <section style={{ background: '#0b0e14', padding: '80px 32px', borderTop: '1px solid rgba(67,70,85,0.3)' }}>
+      <section style={{ background: 'var(--bg-alt)', padding: '80px 32px', borderTop: '1px solid var(--border-color-subtle)' }} className="transition-colors duration-300">
         <div className="max-w-container-max mx-auto">
           <motion.div className="text-center mb-16" initial="hidden" whileInView="show" viewport={VP} variants={fadeUp}>
-            <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.02em', color: '#e0e2eb', marginBottom: 12 }}>Our Core Values</h2>
-            <p style={{ fontSize: 16, color: '#8d90a0' }}>The principles that guide our team every day.</p>
+            <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-main)', marginBottom: 12 }}>Our Core Values</h2>
+            <p style={{ fontSize: 16, color: 'var(--text-muted)' }}>The principles that guide our team every day.</p>
           </motion.div>
 
           <motion.div
@@ -248,16 +245,16 @@ const About = () => (
                 key={title}
                 variants={fadeUp}
                 className="rounded-2xl flex items-center gap-4 transition-all duration-300 group"
-                style={{ padding: '24px 28px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)', cursor: 'default' }}
+                style={{ padding: '24px 28px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 4px 16px var(--shadow-color)', cursor: 'default' }}
                 whileHover={{ y: -3, transition: { duration: 0.2 } }}
               >
                 <div
                   className="rounded-xl flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-[#2563eb]"
-                  style={{ width: 44, height: 44, background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(180,197,255,0.12)', color: '#b4c5ff' }}
+                  style={{ width: 44, height: 44, background: 'rgba(37,99,235,0.12)', border: '1px solid var(--border-color)', color: '#2563eb' }}
                 >
                   <Icon className="w-5 h-5 group-hover:text-white transition-colors duration-300" />
                 </div>
-                <span style={{ fontSize: 16, fontWeight: 600, color: '#e0e2eb' }}>{title}</span>
+                <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-main)' }}>{title}</span>
               </motion.div>
             ))}
           </motion.div>
@@ -265,14 +262,14 @@ const About = () => (
       </section>
 
       {/* ══ LEADERSHIP ══════════════════════════════════════════ */}
-      <section style={{ background: '#10131a', padding: '80px 32px' }}>
+      <section style={{ background: 'var(--bg-main)', padding: '80px 32px' }} className="transition-colors duration-300">
         <div className="max-w-container-max mx-auto">
           <motion.div className="text-center mb-16" initial="hidden" whileInView="show" viewport={VP} variants={fadeUp}>
-            <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{ padding: '6px 16px', background: '#1d2026', border: '1px solid rgba(67,70,85,0.5)' }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#7bd0ff' }} />
-              <span style={{ fontSize: 11, fontWeight: 600, color: '#a4c9ff', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Leadership</span>
+            <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{ padding: '6px 16px', background: 'var(--bg-pill)', border: '1px solid var(--border-color)' }}>
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#2563eb' }} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: '#2563eb', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Leadership</span>
             </div>
-            <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.02em', color: '#e0e2eb' }}>Meet Our Team</h2>
+            <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-main)' }}>Meet Our Team</h2>
           </motion.div>
 
           <motion.div
@@ -285,7 +282,7 @@ const About = () => (
                 key={name}
                 variants={fadeUp}
                 className="rounded-[20px] overflow-hidden group"
-                style={{ background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}
+                style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 6px 24px var(--shadow-color)' }}
               >
                 <div className="relative overflow-hidden" style={{ aspectRatio: '1' }}>
                   <img
@@ -293,11 +290,11 @@ const About = () => (
                     src={img}
                     alt={name}
                   />
-                  <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(25,28,34,0.9) 0%, transparent 60%)' }} />
+                  <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(11,14,20,0.8) 0%, transparent 60%)' }} />
                 </div>
                 <div style={{ padding: '20px 24px' }}>
-                  <h4 style={{ fontSize: 17, fontWeight: 600, color: '#e0e2eb' }}>{name}</h4>
-                  <p style={{ fontSize: 13, color: '#7bd0ff', marginTop: 4 }}>{role}</p>
+                  <h4 style={{ fontSize: 17, fontWeight: 600, color: 'var(--text-main)' }}>{name}</h4>
+                  <p style={{ fontSize: 13, color: '#2563eb', marginTop: 4 }}>{role}</p>
                 </div>
               </motion.div>
             ))}

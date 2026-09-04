@@ -53,7 +53,7 @@ const Services = () => (
       />
 
       {/* ══ SERVICES GRID ════════════════════════════════════════ */}
-      <section style={{ background: '#10131a', padding: '80px 32px' }}>
+      <section style={{ background: 'var(--bg-main)', padding: '80px 32px' }} className="transition-colors duration-300">
         <div className="max-w-container-max mx-auto">
           {/* Section label */}
           <motion.div
@@ -61,9 +61,9 @@ const Services = () => (
             initial="hidden" whileInView="show" viewport={VP}
             variants={fadeUp}
           >
-            <div className="inline-flex items-center gap-2 rounded-full mb-4" style={{ padding: '6px 16px', background: '#1d2026', border: '1px solid rgba(67,70,85,0.5)' }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#b4c5ff' }} />
-              <span style={{ fontSize: 11, fontWeight: 600, color: '#b4c5ff', letterSpacing: '0.1em', textTransform: 'uppercase' }}>What We Do</span>
+            <div className="inline-flex items-center gap-2 rounded-full mb-4" style={{ padding: '6px 16px', background: 'var(--bg-pill)', border: '1px solid var(--border-color)' }}>
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#2563eb' }} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: '#2563eb', letterSpacing: '0.1em', textTransform: 'uppercase' }}>What We Do</span>
             </div>
           </motion.div>
 
@@ -76,7 +76,7 @@ const Services = () => (
             {services.map(({ Icon, title, desc }) => (
               <motion.div key={title} variants={fadeUp}>
                 <ServiceCard
-                  icon={<Icon className="w-5 h-5" style={{ color: '#b4c5ff' }} />}
+                  icon={<Icon className="w-5 h-5" style={{ color: '#2563eb' }} />}
                   title={title}
                   description={desc}
                 />
@@ -87,7 +87,7 @@ const Services = () => (
       </section>
 
       {/* ══ PROCESS STEPS ════════════════════════════════════════ */}
-      <section style={{ background: '#0b0e14', padding: '80px 32px', borderTop: '1px solid rgba(67,70,85,0.3)' }}>
+      <section style={{ background: 'var(--bg-alt)', padding: '80px 32px', borderTop: '1px solid var(--border-color-subtle)' }} className="transition-colors duration-300">
         <div className="max-w-container-max mx-auto">
           {/* Heading */}
           <motion.div
@@ -95,10 +95,10 @@ const Services = () => (
             initial="hidden" whileInView="show" viewport={VP}
             variants={fadeUp}
           >
-            <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{ padding: '6px 16px', background: '#191c22', border: '1px solid rgba(67,70,85,0.5)' }}>
-              <span style={{ fontSize: 11, fontWeight: 600, color: '#b4c5ff', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Our Approach</span>
+            <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{ padding: '6px 16px', background: 'var(--bg-pill)', border: '1px solid var(--border-color)' }}>
+              <span style={{ fontSize: 11, fontWeight: 600, color: '#2563eb', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Our Approach</span>
             </div>
-            <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.02em', color: '#e0e2eb' }}>
+            <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-main)' }}>
               The Way We Work
             </h2>
           </motion.div>
@@ -115,13 +115,13 @@ const Services = () => (
                 variants={fadeScale}
                 whileHover={{ y: -6, transition: { duration: 0.2 } }}
                 className="rounded-2xl relative"
-                style={{ padding: '32px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}
+                style={{ padding: '32px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 4px 20px var(--shadow-color)' }}
               >
                 <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#2563eb', color: '#eeefff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 14, marginBottom: 20, boxShadow: '0 0 16px rgba(37,99,235,0.4)' }}>
                   {num}
                 </div>
-                <h4 style={{ fontSize: 18, fontWeight: 600, color: '#e0e2eb', marginBottom: 10 }}>{title}</h4>
-                <p style={{ fontSize: 14, lineHeight: 1.65, color: '#8d90a0' }}>{desc}</p>
+                <h4 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-main)', marginBottom: 10 }}>{title}</h4>
+                <p style={{ fontSize: 14, lineHeight: 1.65, color: 'var(--text-muted)' }}>{desc}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -129,22 +129,22 @@ const Services = () => (
       </section>
 
       {/* ══ CTA ══════════════════════════════════════════════════ */}
-      <section style={{ background: '#10131a', padding: '80px 32px' }}>
+      <section style={{ background: 'var(--bg-main)', padding: '80px 32px' }} className="transition-colors duration-300">
         <motion.div
           className="max-w-container-max mx-auto rounded-[32px] relative overflow-hidden text-center"
           initial="hidden" whileInView="show" viewport={VP}
           variants={fadeUp}
-          style={{ background: 'linear-gradient(135deg, #1d2026, #191c22)', border: '1px solid rgba(67,70,85,0.5)', padding: '80px 48px' }}
+          style={{ background: 'var(--cta-gradient)', border: '1px solid var(--border-color)', padding: '80px 48px', boxShadow: '0 12px 40px var(--shadow-color)' }}
         >
-          <div style={{ position: 'absolute', top: -40, left: '25%', width: 300, height: 200, borderRadius: '50%', background: 'rgba(37,99,235,0.2)', filter: 'blur(80px)', pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', bottom: -60, right: '20%', width: 280, height: 200, borderRadius: '50%', background: 'rgba(0,117,159,0.15)', filter: 'blur(80px)', pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent, rgba(180,197,255,0.3), transparent)' }} />
+          <div style={{ position: 'absolute', top: -40, left: '25%', width: 300, height: 200, borderRadius: '50%', background: 'var(--orb-primary)', filter: 'blur(80px)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', bottom: -60, right: '20%', width: 280, height: 200, borderRadius: '50%', background: 'var(--orb-secondary)', filter: 'blur(80px)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent, rgba(37,99,235,0.3), transparent)' }} />
 
           <div className="relative z-10">
-            <h2 style={{ fontSize: 'clamp(28px,4vw,48px)', fontWeight: 700, letterSpacing: '-0.025em', color: '#e0e2eb', marginBottom: 16 }}>
+            <h2 style={{ fontSize: 'clamp(28px,4vw,48px)', fontWeight: 700, letterSpacing: '-0.025em', color: 'var(--text-main)', marginBottom: 16 }}>
               Ready to Build Something <span className="text-gradient">Extraordinary?</span>
             </h2>
-            <p style={{ fontSize: 18, color: '#8d90a0', maxWidth: 560, margin: '0 auto 40px', lineHeight: 1.6 }}>
+            <p style={{ fontSize: 18, color: 'var(--text-muted)', maxWidth: 560, margin: '0 auto 40px', lineHeight: 1.6 }}>
               Let's collaborate to transform your vision into a high-impact digital reality. Our experts are ready to guide your journey.
             </p>
             <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
@@ -159,7 +159,7 @@ const Services = () => (
                   Start Your Project <ArrowRight className="w-4 h-4" />
                 </Link>
               </motion.div>
-              <a href="mailto:rogerexindia@gmail.com" style={{ fontSize: 15, color: '#b4c5ff', fontWeight: 500, borderBottom: '1px solid rgba(180,197,255,0.3)', paddingBottom: 2 }}>
+              <a href="mailto:rogerexindia@gmail.com" style={{ fontSize: 15, color: '#2563eb', fontWeight: 600, borderBottom: '1px solid rgba(37,99,235,0.3)', paddingBottom: 2 }}>
                 rogerexindia@gmail.com
               </a>
             </div>

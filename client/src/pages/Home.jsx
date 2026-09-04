@@ -25,7 +25,6 @@ const slideRight = {
   show:   { opacity: 1, x: 0, transition: { duration: 0.9, ease: EASE } },
 };
 
-/* Stagger wrapper — returns a variants object */
 function stagger(children = 0.14, delay = 0) {
   return {
     hidden: {},
@@ -33,7 +32,6 @@ function stagger(children = 0.14, delay = 0) {
   };
 }
 
-/* Scroll viewport — trigger when entering viewport with offset */
 const VP = { once: true, amount: 0.18, margin: '0px 0px -40px 0px' };
 
 /* ─── Data ───────────────────────────────────────────────────────── */
@@ -71,33 +69,29 @@ const values = [
   { Icon: GraduationCap, title: 'Continuous Learning', desc: 'Always evolving with the latest tech trends.' },
 ];
 
-/* ─── Hero badge pills data ──────────────────────────────────────── */
 const heroPills = [
-  { always: true,  dotColor: '#7bd0ff', text: 'CRAFTING THE FUTURE' },
-  { sm: true,      icon: 'verified_user', iconColor: '#b4c5ff', text: 'Enterprise Grade Architecture' },
-  { md: true,      icon: 'bolt', iconColor: '#7bd0ff', text: 'AI-Driven Engineering' },
+  { always: true,  dotColor: '#2563eb', text: 'CRAFTING THE FUTURE' },
+  { sm: true,      icon: 'verified_user', iconColor: '#2563eb', text: 'Enterprise Grade Architecture' },
+  { md: true,      icon: 'bolt', iconColor: '#0284c7', text: 'AI-Driven Engineering' },
 ];
 
 const heroBadges = [
-  { icon: 'cloud_sync', color: '#7bd0ff', title: '99.9% Uptime',   sub: 'Cloud Infrastructure' },
-  { icon: 'smart_toy',  color: '#a4c9ff', title: 'Autonomous AI',  sub: 'Model Pipelines' },
-  { icon: 'security',   color: '#b4c5ff', title: 'Zero Trust',     sub: 'Hardened Systems' },
-  { icon: 'speed',      color: '#7bd0ff', title: '< 85ms Latency', sub: 'High-Load APIs' },
+  { icon: 'cloud_sync', color: '#2563eb', title: '99.9% Uptime',   sub: 'Cloud Infrastructure' },
+  { icon: 'smart_toy',  color: '#0284c7', title: 'Autonomous AI',  sub: 'Model Pipelines' },
+  { icon: 'security',   color: '#059669', title: 'Zero Trust',     sub: 'Hardened Systems' },
+  { icon: 'speed',      color: '#d97706', title: '< 85ms Latency', sub: 'High-Load APIs' },
 ];
 
-/* ═══════════════════════════════════════════════════════════════════
-   HOME COMPONENT
-═══════════════════════════════════════════════════════════════════ */
 const Home = () => (
   <>
     {/* ══ HERO ════════════════════════════════════════════════════ */}
     <section
-      className="relative overflow-hidden"
-      style={{ background: '#10131a', minHeight: '90vh', display: 'flex', alignItems: 'center' }}
+      className="relative overflow-hidden transition-colors duration-300"
+      style={{ background: 'var(--bg-main)', minHeight: '90vh', display: 'flex', alignItems: 'center' }}
     >
       {/* Orbs */}
-      <div style={{ position: 'absolute', top: 48, left: '50%', transform: 'translateX(-50%)', width: 700, height: 450, borderRadius: '50%', background: 'rgba(37,99,235,0.18)', filter: 'blur(140px)', pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', top: 500, right: -128, width: 500, height: 400, borderRadius: '50%', background: 'rgba(0,117,159,0.12)', filter: 'blur(160px)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', top: 48, left: '50%', transform: 'translateX(-50%)', width: 700, height: 450, borderRadius: '50%', background: 'var(--orb-primary)', filter: 'blur(140px)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', top: 500, right: -128, width: 500, height: 400, borderRadius: '50%', background: 'var(--orb-secondary)', filter: 'blur(160px)', pointerEvents: 'none' }} />
       <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-container-max mx-auto flex flex-col items-center text-center" style={{ padding: '96px 32px 80px' }}>
@@ -115,14 +109,14 @@ const Home = () => (
               className={`inline-flex items-center gap-2 rounded-full${sm ? ' hidden sm:inline-flex' : ''}${md ? ' hidden md:inline-flex' : ''}`}
               style={{
                 padding: '6px 14px',
-                background: always ? 'rgba(39,42,49,0.8)' : 'rgba(27,32,38,0.6)',
-                border: '1px solid rgba(67,70,85,0.5)',
+                background: 'var(--bg-pill)',
+                border: '1px solid var(--border-color)',
                 backdropFilter: 'blur(12px)',
               }}
             >
               {dotColor && <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: dotColor }} />}
               {icon && <span className="material-symbols-outlined" style={{ fontSize: 14, color: iconColor }}>{icon}</span>}
-              <span style={{ fontSize: 12, fontWeight: 600, color: always ? '#a4c9ff' : '#c3c6d7', letterSpacing: '0.08em' }}>{text}</span>
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-main)', letterSpacing: '0.08em' }}>{text}</span>
             </motion.div>
           ))}
         </motion.div>
@@ -131,7 +125,7 @@ const Home = () => (
         <motion.h1
           initial="hidden" animate="show"
           variants={fadeUp}
-          style={{ maxWidth: 900, fontSize: 'clamp(36px, 6vw, 72px)', fontWeight: 700, lineHeight: 1.08, letterSpacing: '-0.03em', color: '#e0e2eb', marginBottom: 24 }}
+          style={{ maxWidth: 900, fontSize: 'clamp(36px, 6vw, 72px)', fontWeight: 700, lineHeight: 1.08, letterSpacing: '-0.03em', color: 'var(--text-main)', marginBottom: 24 }}
         >
           Building{' '}
           <span className="text-gradient">Digital Excellence</span>
@@ -142,7 +136,7 @@ const Home = () => (
         <motion.p
           initial="hidden" animate="show"
           variants={{ hidden: { opacity: 0, y: 28 }, show: { opacity: 1, y: 0, transition: { duration: 0.85, ease: EASE, delay: 0.22 } } }}
-          style={{ maxWidth: 560, fontSize: 18, lineHeight: 1.65, color: '#8d90a0', marginBottom: 48 }}
+          style={{ maxWidth: 560, fontSize: 18, lineHeight: 1.65, color: 'var(--text-muted)', marginBottom: 48 }}
         >
           Empowering businesses with innovative, scalable, and reliable digital solutions
           tailored to navigate the complexities of the modern tech landscape.
@@ -163,7 +157,7 @@ const Home = () => (
               onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 0 32px rgba(37,99,235,0.45)'; }}
             >
               Get Started
-              <span className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.15)' }}>
+              <span className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.2)' }}>
                 <ArrowRight className="w-3 h-3" />
               </span>
             </Link>
@@ -172,11 +166,9 @@ const Home = () => (
             <Link
               to="/services"
               className="inline-flex items-center justify-center gap-2 rounded-full transition-all duration-200"
-              style={{ padding: '14px 32px', fontSize: 15, fontWeight: 500, background: '#272a31', color: '#e0e2eb', border: '1px solid rgba(67,70,85,0.5)' }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = '#32353c'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = '#272a31'; }}
+              style={{ padding: '14px 32px', fontSize: 15, fontWeight: 500, background: 'var(--bg-pill)', color: 'var(--text-main)', border: '1px solid var(--border-color)' }}
             >
-              <span className="material-symbols-outlined" style={{ fontSize: 18, color: '#b4c5ff' }}>terminal</span>
+              <span className="material-symbols-outlined" style={{ fontSize: 18, color: '#2563eb' }}>terminal</span>
               Explore Services
             </Link>
           </motion.div>
@@ -192,13 +184,13 @@ const Home = () => (
             <motion.div
               key={title}
               variants={fadeUp}
-              className="flex items-center gap-3 rounded-xl"
-              style={{ padding: '12px 14px', background: 'rgba(25,28,34,0.7)', border: '1px solid rgba(67,70,85,0.35)', backdropFilter: 'blur(12px)' }}
+              className="flex items-center gap-3 rounded-xl transition-colors duration-300"
+              style={{ padding: '12px 14px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 4px 16px var(--shadow-color)', backdropFilter: 'blur(12px)' }}
             >
               <span className="material-symbols-outlined" style={{ fontSize: 20, color }}>{icon}</span>
               <div className="text-left">
-                <p style={{ fontSize: 12, fontWeight: 600, color: '#e0e2eb' }}>{title}</p>
-                <p style={{ fontSize: 11, color: '#8d90a0' }}>{sub}</p>
+                <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-main)' }}>{title}</p>
+                <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{sub}</p>
               </div>
             </motion.div>
           ))}
@@ -207,12 +199,12 @@ const Home = () => (
     </section>
 
     {/* ══ METRICS BAR ══════════════════════════════════════════════ */}
-    <section style={{ background: '#10131a', padding: '0 32px 80px' }}>
+    <section style={{ background: 'var(--bg-main)', padding: '0 32px 80px' }} className="transition-colors duration-300">
       <motion.div
         className="max-w-container-max mx-auto rounded-2xl"
         initial="hidden" whileInView="show" viewport={VP}
         variants={fadeUp}
-        style={{ background: '#191c22', border: '1px solid rgba(67,70,85,0.4)', padding: '40px 48px' }}
+        style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', padding: '40px 48px', boxShadow: '0 8px 32px var(--shadow-color)' }}
       >
         <motion.div
           className="grid grid-cols-2 lg:grid-cols-4 gap-8"
@@ -225,12 +217,12 @@ const Home = () => (
               className="flex flex-col items-center lg:items-start text-center lg:text-left"
               style={{ padding: '16px 24px' }}
             >
-              <span style={{ fontSize: 11, fontWeight: 600, color: '#b4c5ff', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>{label}</span>
+              <span style={{ fontSize: 11, fontWeight: 600, color: '#2563eb', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>{label}</span>
               <div className="flex items-baseline gap-1">
-                <span style={{ fontSize: 48, fontWeight: 700, color: '#e0e2eb', letterSpacing: '-0.03em', lineHeight: 1 }}>{stat}</span>
-                {unit && <span style={{ fontSize: 20, fontWeight: 500, color: '#7bd0ff' }}>{unit}</span>}
+                <span style={{ fontSize: 48, fontWeight: 700, color: 'var(--text-main)', letterSpacing: '-0.03em', lineHeight: 1 }}>{stat}</span>
+                {unit && <span style={{ fontSize: 20, fontWeight: 500, color: '#60A5FA' }}>{unit}</span>}
               </div>
-              <p style={{ fontSize: 13, color: '#8d90a0', marginTop: 6 }}>{desc}</p>
+              <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 6 }}>{desc}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -238,15 +230,15 @@ const Home = () => (
     </section>
 
     {/* ══ SERVICES GRID ════════════════════════════════════════════ */}
-    <section id="services-grid" style={{ background: '#10131a', padding: '80px 32px' }}>
+    <section id="services-grid" style={{ background: 'var(--bg-main)', padding: '80px 32px' }} className="transition-colors duration-300">
       <div className="max-w-container-max mx-auto">
         <motion.div className="text-center mb-16" initial="hidden" whileInView="show" viewport={VP} variants={fadeUp}>
-          <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{ padding: '6px 16px', background: '#1d2026', border: '1px solid rgba(67,70,85,0.5)' }}>
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#b4c5ff' }} />
-            <span style={{ fontSize: 11, fontWeight: 600, color: '#b4c5ff', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Specialized Solutions</span>
+          <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{ padding: '6px 16px', background: 'var(--bg-pill)', border: '1px solid var(--border-color)' }}>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#2563eb' }} />
+            <span style={{ fontSize: 11, fontWeight: 600, color: '#2563eb', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Specialized Solutions</span>
           </div>
-          <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.02em', color: '#e0e2eb', marginBottom: 16 }}>Our Core Expertise</h2>
-          <p style={{ fontSize: 16, color: '#8d90a0', maxWidth: 560, margin: '0 auto' }}>
+          <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-main)', marginBottom: 16 }}>Our Core Expertise</h2>
+          <p style={{ fontSize: 16, color: 'var(--text-muted)', maxWidth: 560, margin: '0 auto' }}>
             A comprehensive suite of digital services designed to scale your operations and enhance your competitive edge.
           </p>
         </motion.div>
@@ -260,7 +252,7 @@ const Home = () => (
             <motion.div key={title} variants={fadeUp}>
               <ServiceCard
                 variant="home"
-                icon={<Icon className="w-5 h-5" style={{ color: '#b4c5ff' }} />}
+                icon={<Icon className="w-5 h-5" style={{ color: '#2563eb' }} />}
                 title={title}
                 description={desc}
               />
@@ -270,17 +262,17 @@ const Home = () => (
       </div>
     </section>
 
-    {/* ══ TECH STACK MARQUEE (CSS animated) ════════════════════════ */}
-    <section style={{ background: '#0b0e14', padding: '48px 0', overflow: 'hidden', borderTop: '1px solid rgba(67,70,85,0.3)', borderBottom: '1px solid rgba(67,70,85,0.3)' }}>
+    {/* ══ TECH STACK MARQUEE ════════════════════════════════════════ */}
+    <section style={{ background: 'var(--bg-alt)', padding: '48px 0', overflow: 'hidden', borderTop: '1px solid var(--border-color-subtle)', borderBottom: '1px solid var(--border-color-subtle)' }} className="transition-colors duration-300">
       <div className="relative overflow-hidden">
         <div className="marquee-track">
           {techStack.map((tech, i) => (
             <div
               key={i}
               className="inline-flex items-center gap-2 rounded-full shrink-0"
-              style={{ padding: '8px 20px', margin: '0 8px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)', fontSize: 13, fontWeight: 500, color: '#c3c6d7', whiteSpace: 'nowrap' }}
+              style={{ padding: '8px 20px', margin: '0 8px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', fontSize: 13, fontWeight: 500, color: 'var(--text-main)', whiteSpace: 'nowrap' }}
             >
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#b4c5ff', display: 'inline-block', flexShrink: 0 }} />
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#2563eb', display: 'inline-block', flexShrink: 0 }} />
               {tech}
             </div>
           ))}
@@ -289,7 +281,7 @@ const Home = () => (
     </section>
 
     {/* ══ ABOUT SNIPPET — slide from sides ═════════════════════════ */}
-    <section style={{ background: '#10131a', padding: '80px 32px' }}>
+    <section style={{ background: 'var(--bg-main)', padding: '80px 32px' }} className="transition-colors duration-300">
       <motion.div
         className="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center"
         initial="hidden" whileInView="show" viewport={VP}
@@ -299,7 +291,7 @@ const Home = () => (
         <motion.div
           variants={slideLeft}
           className="rounded-[20px] overflow-hidden relative"
-          style={{ aspectRatio: '1', border: '1px solid rgba(67,70,85,0.4)' }}
+          style={{ aspectRatio: '1', border: '1px solid var(--border-color)', boxShadow: '0 8px 32px var(--shadow-color)' }}
         >
           <img
             className="w-full h-full object-cover"
@@ -311,13 +303,13 @@ const Home = () => (
 
         {/* Text from right */}
         <motion.div variants={slideRight} style={{ paddingLeft: '24px' }}>
-          <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{ padding: '6px 14px', background: '#1d2026', border: '1px solid rgba(67,70,85,0.5)' }}>
-            <span style={{ fontSize: 11, fontWeight: 600, color: '#a4c9ff', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Our Identity</span>
+          <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{ padding: '6px 14px', background: 'var(--bg-pill)', border: '1px solid var(--border-color)' }}>
+            <span style={{ fontSize: 11, fontWeight: 600, color: '#2563eb', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Our Identity</span>
           </div>
-          <h2 style={{ fontSize: 'clamp(24px,3vw,36px)', fontWeight: 600, color: '#e0e2eb', marginBottom: 16, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
+          <h2 style={{ fontSize: 'clamp(24px,3vw,36px)', fontWeight: 600, color: 'var(--text-main)', marginBottom: 16, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
             Innovative IT Consulting for the Global Market
           </h2>
-          <p style={{ fontSize: 16, lineHeight: 1.7, color: '#8d90a0', marginBottom: 32 }}>
+          <p style={{ fontSize: 16, lineHeight: 1.7, color: 'var(--text-muted)', marginBottom: 32 }}>
             Rogerex India is a premier IT services company dedicated to transforming complex business
             challenges into elegant digital solutions. We combine technical rigor with creative strategy
             to deliver high-impact software, cloud, and AI products.
@@ -325,8 +317,8 @@ const Home = () => (
           <div className="grid grid-cols-2 gap-8">
             {[{ val: '10+', label: 'Years Experience' }, { val: '250+', label: 'Projects Delivered' }].map(({ val, label }) => (
               <div key={label}>
-                <div style={{ fontSize: 40, fontWeight: 700, color: '#b4c5ff', letterSpacing: '-0.03em', lineHeight: 1 }}>{val}</div>
-                <div style={{ fontSize: 13, color: '#8d90a0', marginTop: 6 }}>{label}</div>
+                <div style={{ fontSize: 40, fontWeight: 700, color: '#2563eb', letterSpacing: '-0.03em', lineHeight: 1 }}>{val}</div>
+                <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 6 }}>{label}</div>
               </div>
             ))}
           </div>
@@ -335,13 +327,13 @@ const Home = () => (
     </section>
 
     {/* ══ VALUES — stagger on scroll ════════════════════════════════ */}
-    <section style={{ background: '#0b0e14', padding: '80px 32px', borderTop: '1px solid rgba(67,70,85,0.3)' }}>
+    <section style={{ background: 'var(--bg-alt)', padding: '80px 32px', borderTop: '1px solid var(--border-color-subtle)' }} className="transition-colors duration-300">
       <div className="max-w-container-max mx-auto">
         <motion.div className="text-center mb-16" initial="hidden" whileInView="show" viewport={VP} variants={fadeUp}>
-          <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.02em', color: '#e0e2eb', marginBottom: 12 }}>
+          <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-main)', marginBottom: 12 }}>
             Values that Drive Excellence
           </h2>
-          <p style={{ fontSize: 16, color: '#8d90a0' }}>The DNA behind every solution we build.</p>
+          <p style={{ fontSize: 16, color: 'var(--text-muted)' }}>The DNA behind every solution we build.</p>
         </motion.div>
 
         <motion.div
@@ -354,14 +346,14 @@ const Home = () => (
               key={title}
               variants={fadeUp}
               className="rounded-2xl"
-              style={{ padding: '32px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)', cursor: 'default' }}
+              style={{ padding: '32px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 4px 20px var(--shadow-color)', cursor: 'default' }}
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
             >
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(180,197,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, color: '#b4c5ff' }}>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(37,99,235,0.12)', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, color: '#2563eb' }}>
                 <Icon className="w-5 h-5" />
               </div>
-              <h4 style={{ fontSize: 16, fontWeight: 600, color: '#e0e2eb', marginBottom: 8 }}>{title}</h4>
-              <p style={{ fontSize: 14, color: '#8d90a0', lineHeight: 1.6 }}>{desc}</p>
+              <h4 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-main)', marginBottom: 8 }}>{title}</h4>
+              <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.6 }}>{desc}</p>
             </motion.div>
           ))}
         </motion.div>
