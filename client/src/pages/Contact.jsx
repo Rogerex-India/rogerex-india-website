@@ -1,6 +1,35 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Mail, MapPin, Globe, Share2, Users, ChevronDown, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
+
+/* ─── Animation presets ────────────────────── */
+const EASE = [0.16, 1, 0.3, 1];
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: (custom = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.85, ease: EASE, delay: custom },
+  }),
+};
+
+const popIn = {
+  hidden: { opacity: 0, scale: 0.94 },
+  visible: (custom = 0) => ({
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.75, ease: EASE, delay: custom },
+  }),
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.14, delayChildren: 0.05 } },
+};
+
+const VP = { once: true, amount: 0.18, margin: '0px 0px -40px 0px' };
 
 const faqs = [
   {
@@ -80,16 +109,37 @@ const Contact = () => {
           <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
 
           <div className="relative z-10 max-w-container-max mx-auto text-center">
-            <div className="inline-flex items-center gap-2 rounded-full mb-6" style={{ padding: '6px 16px', background: '#1d2026', border: '1px solid rgba(67,70,85,0.5)' }}>
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={popIn}
+              custom={0}
+              className="inline-flex items-center gap-2 rounded-full mb-6"
+              style={{ padding: '6px 16px', background: '#1d2026', border: '1px solid rgba(67,70,85,0.5)' }}
+            >
               <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#7bd0ff' }} />
               <span style={{ fontSize: 11, fontWeight: 600, color: '#a4c9ff', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Get In Touch</span>
-            </div>
-            <h1 style={{ fontSize: 'clamp(36px,5vw,64px)', fontWeight: 700, letterSpacing: '-0.03em', color: '#e0e2eb', marginBottom: 20, lineHeight: 1.08 }}>
+            </motion.div>
+
+            <motion.h1
+              initial="hidden"
+              animate="visible"
+              variants={fadeUp}
+              custom={0.12}
+              style={{ fontSize: 'clamp(36px,5vw,64px)', fontWeight: 700, letterSpacing: '-0.03em', color: '#e0e2eb', marginBottom: 20, lineHeight: 1.08 }}
+            >
               Let's Build Something <span className="text-gradient">Great</span> Together
-            </h1>
-            <p style={{ fontSize: 18, lineHeight: 1.65, color: '#8d90a0', maxWidth: 520, margin: '0 auto' }}>
+            </motion.h1>
+
+            <motion.p
+              initial="hidden"
+              animate="visible"
+              variants={fadeUp}
+              custom={0.24}
+              style={{ fontSize: 18, lineHeight: 1.65, color: '#8d90a0', maxWidth: 520, margin: '0 auto' }}
+            >
               Have an idea? We're ready to transform it into a reliable technology solution. Reach out today.
-            </p>
+            </motion.p>
           </div>
         </section>
 
@@ -98,7 +148,14 @@ const Contact = () => {
           <div className="max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
 
             {/* ── Contact Form ── */}
-            <div className="rounded-[24px]" style={{ padding: '48px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}>
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={VP}
+              variants={popIn}
+              className="rounded-[24px]"
+              style={{ padding: '48px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}
+            >
               <h2 style={{ fontSize: 22, fontWeight: 600, color: '#e0e2eb', marginBottom: 32, letterSpacing: '-0.01em' }}>Send us a Message</h2>
               <form className="space-y-5" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -141,7 +198,8 @@ const Contact = () => {
                     onBlur={(e) => { e.target.style.borderColor = 'rgba(67,70,85,0.5)'; }}
                   />
                 </div>
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
                   type="submit"
                   disabled={isLoading}
                   className="w-full flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-300"
@@ -154,14 +212,20 @@ const Contact = () => {
                 >
                   {isLoading ? 'Sending...' : 'Send Message'}
                   {!isLoading && <Send className="w-4 h-4" />}
-                </button>
+                </motion.button>
               </form>
-            </div>
+            </motion.div>
 
             {/* ── Info & Map Side ── */}
-            <div className="flex flex-col gap-6">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={VP}
+              variants={staggerContainer}
+              className="flex flex-col gap-6"
+            >
               {/* Info card */}
-              <div className="rounded-[24px]" style={{ padding: '40px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}>
+              <motion.div variants={fadeUp} className="rounded-[24px]" style={{ padding: '40px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}>
                 <h2 style={{ fontSize: 22, fontWeight: 600, color: '#e0e2eb', marginBottom: 28, letterSpacing: '-0.01em' }}>Contact Information</h2>
                 <div className="space-y-6">
                   {[
@@ -172,7 +236,7 @@ const Contact = () => {
                       <div style={{
                         width: 44, height: 44, borderRadius: 12, flexShrink: 0,
                         background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(180,197,255,0.12)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        display: 'flex', items: 'center', justifyContent: 'center',
                       }}>
                         <span className="material-symbols-outlined" style={{ fontSize: 20, color: '#b4c5ff' }}>{icon}</span>
                       </div>
@@ -202,10 +266,11 @@ const Contact = () => {
                         { icon: <Share2 className="w-4 h-4" />, label: 'Twitter' },
                         { icon: <Users className="w-4 h-4" />, label: 'LinkedIn' },
                       ].map(({ icon, label }) => (
-                        <a
+                        <motion.a
                           key={label}
                           href="#"
                           aria-label={label}
+                          whileTap={{ scale: 0.92 }}
                           className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200"
                           style={{
                             background: '#1d2026', color: '#8d90a0',
@@ -223,20 +288,21 @@ const Contact = () => {
                           }}
                         >
                           {icon}
-                        </a>
+                        </motion.a>
                       ))}
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Map placeholder */}
-              <div
-                className="flex-grow rounded-[24px] overflow-hidden relative"
+              <motion.div
+                variants={fadeUp}
+                className="flex-grow rounded-[24px] overflow-hidden relative group"
                 style={{ minHeight: 200, background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}
               >
                 <div
-                  className="absolute inset-0 bg-cover bg-center"
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                   style={{ backgroundImage: "url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=800')" }}
                 />
                 <div style={{ position: 'absolute', inset: 0, background: 'rgba(11,14,20,0.6)' }} />
@@ -252,25 +318,38 @@ const Contact = () => {
                     GET DIRECTIONS
                   </a>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </section>
 
         {/* ── FAQ Section ── */}
         <section style={{ background: '#0b0e14', padding: '80px 32px', borderTop: '1px solid rgba(67,70,85,0.3)' }}>
           <div style={{ maxWidth: 720, margin: '0 auto' }}>
-            <div className="text-center mb-16">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={VP}
+              variants={fadeUp}
+              className="text-center mb-16"
+            >
               <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{ padding: '6px 16px', background: '#191c22', border: '1px solid rgba(67,70,85,0.5)' }}>
                 <span style={{ fontSize: 11, fontWeight: 600, color: '#a4c9ff', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Common Questions</span>
               </div>
               <h2 style={{ fontSize: 'clamp(28px,4vw,40px)', fontWeight: 600, letterSpacing: '-0.02em', color: '#e0e2eb' }}>Frequently Asked Questions</h2>
-            </div>
+            </motion.div>
 
-            <div className="space-y-3">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={VP}
+              variants={staggerContainer}
+              className="space-y-3"
+            >
               {faqs.map(({ id, q, a }) => (
-                <div
+                <motion.div
                   key={id}
+                  variants={fadeUp}
                   className="rounded-2xl overflow-hidden transition-all duration-200"
                   style={{
                     background: '#191c22',
@@ -291,19 +370,21 @@ const Contact = () => {
                       style={{ color: '#8d90a0', transform: openFaq === id ? 'rotate(180deg)' : 'none' }}
                     />
                   </button>
-                  <div
-                    style={{
-                      maxHeight: openFaq === id ? 400 : 0,
-                      overflow: 'hidden',
-                      transition: 'max-height 0.35s ease, opacity 0.35s ease',
-                      opacity: openFaq === id ? 1 : 0,
-                    }}
-                  >
-                    <p style={{ padding: '0 24px 20px', fontSize: 15, lineHeight: 1.7, color: '#8d90a0' }}>{a}</p>
-                  </div>
-                </div>
+                  <AnimatePresence>
+                    {openFaq === id && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.35, ease: EASE }}
+                      >
+                        <p style={{ padding: '0 24px 20px', fontSize: 15, lineHeight: 1.7, color: '#8d90a0' }}>{a}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </section>
       </main>

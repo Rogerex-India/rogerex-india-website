@@ -1,7 +1,36 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Users, GraduationCap, MapPin, Send, FileText, UploadCloud, ArrowRight, Heart } from 'lucide-react';
 import toast from 'react-hot-toast';
+
+/* ─── Animation presets ────────────────────── */
+const EASE = [0.16, 1, 0.3, 1];
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: (custom = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.85, ease: EASE, delay: custom },
+  }),
+};
+
+const popIn = {
+  hidden: { opacity: 0, scale: 0.92 },
+  visible: (custom = 0) => ({
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.75, ease: EASE, delay: custom },
+  }),
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.14, delayChildren: 0.05 } },
+};
+
+const VP = { once: true, amount: 0.18, margin: '0px 0px -40px 0px' };
 
 const benefits = [
   {
@@ -98,94 +127,171 @@ const Careers = () => {
           <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
 
           <div className="relative z-10 max-w-container-max mx-auto text-center">
-            <div className="inline-flex items-center gap-2 rounded-full mb-6" style={{ padding: '6px 16px', background: '#1d2026', border: '1px solid rgba(67,70,85,0.5)' }}>
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={popIn}
+              custom={0}
+              className="inline-flex items-center gap-2 rounded-full mb-6"
+              style={{ padding: '6px 16px', background: '#1d2026', border: '1px solid rgba(67,70,85,0.5)' }}
+            >
               <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#7bd0ff' }} />
               <span style={{ fontSize: 11, fontWeight: 600, color: '#a4c9ff', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Join the Team</span>
-            </div>
-            <h1 style={{ fontSize: 'clamp(36px,6vw,72px)', fontWeight: 700, letterSpacing: '-0.03em', color: '#e0e2eb', marginBottom: 24, lineHeight: 1.08, maxWidth: '4 * 560px', margin: '0 auto 24px' }}>
-              Help Us Build <span className="text-gradient">Digital Excellence</span>
-            </h1>
-            <p style={{ fontSize: 18, lineHeight: 1.65, color: '#8d90a0', maxWidth: 540, margin: '0 auto 40px' }}>
-              At RogerEx, we transform ideas into reliable technology solutions. We're looking for passionate individuals who value innovation, quality, and continuous learning.
-            </p>
-            <a
-              href="#openings"
-              className="inline-flex items-center gap-2 rounded-full font-semibold transition-all duration-300"
-              style={{ padding: '14px 32px', fontSize: 15, background: '#2563eb', color: '#eeefff', boxShadow: '0 0 28px rgba(37,99,235,0.4)' }}
-              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 0 48px rgba(37,99,235,0.65)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 0 28px rgba(37,99,235,0.4)'; }}
+            </motion.div>
+
+            <motion.h1
+              initial="hidden"
+              animate="visible"
+              variants={fadeUp}
+              custom={0.12}
+              style={{ fontSize: 'clamp(36px,6vw,72px)', fontWeight: 700, letterSpacing: '-0.03em', color: '#e0e2eb', marginBottom: 24, lineHeight: 1.08, maxWidth: 840, margin: '0 auto 24px' }}
             >
-              View Open Positions <ArrowRight className="w-4 h-4" />
-            </a>
+              Help Us Build <span className="text-gradient">Digital Excellence</span>
+            </motion.h1>
+
+            <motion.p
+              initial="hidden"
+              animate="visible"
+              variants={fadeUp}
+              custom={0.24}
+              style={{ fontSize: 18, lineHeight: 1.65, color: '#8d90a0', maxWidth: 540, margin: '0 auto 40px' }}
+            >
+              At RogerEx, we transform ideas into reliable technology solutions. We're looking for passionate individuals who value innovation, quality, and continuous learning.
+            </motion.p>
+
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeUp}
+              custom={0.34}
+            >
+              <motion.a
+                href="#openings"
+                whileTap={{ scale: 0.96 }}
+                className="inline-flex items-center gap-2 rounded-full font-semibold transition-all duration-300"
+                style={{ padding: '14px 32px', fontSize: 15, background: '#2563eb', color: '#eeefff', boxShadow: '0 0 28px rgba(37,99,235,0.4)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 0 48px rgba(37,99,235,0.65)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 0 28px rgba(37,99,235,0.4)'; }}
+              >
+                View Open Positions <ArrowRight className="w-4 h-4" />
+              </motion.a>
+            </motion.div>
           </div>
         </section>
 
         {/* ── Life at Rogerex ── */}
         <section style={{ background: '#10131a', padding: '80px 32px' }}>
           <div className="max-w-container-max mx-auto">
-            <div className="mb-12">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={VP}
+              variants={fadeUp}
+              className="mb-12"
+            >
               <h2 style={{ fontSize: 'clamp(24px,3vw,36px)', fontWeight: 600, letterSpacing: '-0.02em', color: '#e0e2eb', marginBottom: 8 }}>Life at Rogerex</h2>
               <p style={{ fontSize: 16, color: '#8d90a0' }}>A culture driven by innovation and customer success.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6" style={{ minHeight: 480 }}>
+            </motion.div>
+
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={VP}
+              variants={staggerContainer}
+              className="grid grid-cols-1 md:grid-cols-12 gap-6"
+              style={{ minHeight: 480 }}
+            >
               {/* Main image */}
-              <div className="md:col-span-8 relative overflow-hidden rounded-[20px] group" style={{ minHeight: 320, border: '1px solid rgba(67,70,85,0.4)' }}>
-                <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1400')" }} />
+              <motion.div
+                variants={fadeUp}
+                className="md:col-span-8 relative overflow-hidden rounded-[20px] group"
+                style={{ minHeight: 320, border: '1px solid rgba(67,70,85,0.4)' }}
+              >
+                <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1400')" }} />
                 <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(11,14,20,0.85) 0%, rgba(11,14,20,0.2) 50%, transparent 100%)' }} />
                 <div className="absolute bottom-8 left-8 z-20">
                   <h3 style={{ fontSize: 22, fontWeight: 600, color: '#fff', marginBottom: 6 }}>Our Collaborative Workspace</h3>
                   <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)' }}>Where ideas meet execution in a high-performance environment.</p>
                 </div>
-              </div>
+              </motion.div>
+
               {/* Side cards */}
               <div className="md:col-span-4 grid grid-rows-2 gap-6">
-                <div className="rounded-[20px] flex flex-col justify-center" style={{ padding: '28px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}>
+                <motion.div
+                  variants={fadeUp}
+                  className="rounded-[20px] flex flex-col justify-center"
+                  style={{ padding: '28px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}
+                >
                   <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(37,99,235,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14, color: '#b4c5ff' }}>
                     <Users className="w-5 h-5" />
                   </div>
                   <h3 style={{ fontSize: 16, fontWeight: 600, color: '#e0e2eb', marginBottom: 8 }}>Innovation First</h3>
                   <p style={{ fontSize: 14, color: '#8d90a0', lineHeight: 1.6 }}>We empower our teams to experiment with AI, Cloud, and the latest stack to solve real-world problems.</p>
-                </div>
-                <div className="relative overflow-hidden rounded-[20px] group" style={{ minHeight: 180, border: '1px solid rgba(67,70,85,0.4)' }}>
-                  <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?auto=format&fit=crop&q=80&w=800')" }} />
+                </motion.div>
+
+                <motion.div
+                  variants={fadeUp}
+                  className="relative overflow-hidden rounded-[20px] group"
+                  style={{ minHeight: 180, border: '1px solid rgba(67,70,85,0.4)' }}
+                >
+                  <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?auto=format&fit=crop&q=80&w=800')" }} />
                   <div className="absolute inset-0" style={{ background: 'rgba(37,99,235,0.2)', mixBlendMode: 'multiply' }} />
-                </div>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </section>
 
         {/* ── Benefits ── */}
         <section style={{ background: '#0b0e14', padding: '80px 32px', borderTop: '1px solid rgba(67,70,85,0.3)' }}>
           <div className="max-w-container-max mx-auto">
-            <div className="text-center mb-16">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={VP}
+              variants={fadeUp}
+              className="text-center mb-16"
+            >
               <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.02em', color: '#e0e2eb', marginBottom: 12 }}>Why Work With Us?</h2>
               <p style={{ fontSize: 16, color: '#8d90a0' }}>Designed for growth, flexibility, and well-being.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            </motion.div>
+
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={VP}
+              variants={staggerContainer}
+              className="grid grid-cols-1 md:grid-cols-3 gap-6"
+            >
               {benefits.map(({ icon, title, desc }) => (
-                <div
+                <motion.div
                   key={title}
+                  variants={popIn}
+                  whileHover={{ y: -6, borderColor: 'rgba(180,197,255,0.25)' }}
                   className="rounded-2xl transition-all duration-300"
                   style={{ padding: '36px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(180,197,255,0.2)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(67,70,85,0.4)'; e.currentTarget.style.transform = 'translateY(0)'; }}
                 >
                   <div style={{ width: 56, height: 56, borderRadius: 16, background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(180,197,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
                     <span className="material-symbols-outlined" style={{ fontSize: 24, color: '#b4c5ff' }}>{icon}</span>
                   </div>
                   <h3 style={{ fontSize: 18, fontWeight: 600, color: '#e0e2eb', marginBottom: 10 }}>{title}</h3>
                   <p style={{ fontSize: 14, lineHeight: 1.7, color: '#8d90a0' }}>{desc}</p>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </section>
 
         {/* ── Open Positions ── */}
         <section id="openings" style={{ background: '#10131a', padding: '80px 32px' }}>
           <div className="max-w-container-max mx-auto">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={VP}
+              variants={fadeUp}
+              className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4"
+            >
               <div>
                 <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.02em', color: '#e0e2eb', marginBottom: 8 }}>Open Opportunities</h2>
                 <p style={{ fontSize: 16, color: '#8d90a0' }}>Find your next challenge in our growing team.</p>
@@ -193,15 +299,22 @@ const Careers = () => {
               <div className="inline-flex items-center gap-2 rounded-full" style={{ padding: '6px 16px', background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(37,99,235,0.3)' }}>
                 <span style={{ fontSize: 12, fontWeight: 700, color: '#b4c5ff', letterSpacing: '0.08em' }}>4 OPENINGS</span>
               </div>
-            </div>
-            <div className="space-y-4">
+            </motion.div>
+
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={VP}
+              variants={staggerContainer}
+              className="space-y-4"
+            >
               {openings.map(({ title, type, location, comp }) => (
-                <div
+                <motion.div
                   key={title}
+                  variants={fadeUp}
+                  whileHover={{ borderColor: 'rgba(180,197,255,0.25)', x: 4 }}
                   className="rounded-2xl flex flex-col md:flex-row items-center justify-between transition-all duration-300 group"
                   style={{ padding: '28px 32px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(180,197,255,0.25)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(67,70,85,0.4)'; }}
                 >
                   <div className="mb-4 md:mb-0">
                     <h3
@@ -225,33 +338,48 @@ const Careers = () => {
                       ))}
                     </div>
                   </div>
-                  <Link
-                    to="/contact"
-                    className="w-full md:w-auto text-center rounded-xl font-semibold transition-all duration-200"
-                    style={{ padding: '12px 28px', fontSize: 14, background: '#2563eb', color: '#eeefff', display: 'inline-block' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 0 24px rgba(37,99,235,0.4)'; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none'; }}
-                  >
-                    Apply Now
-                  </Link>
-                </div>
+                  <motion.div whileTap={{ scale: 0.96 }} className="w-full md:w-auto text-center">
+                    <Link
+                      to="/contact"
+                      className="w-full md:w-auto text-center rounded-xl font-semibold transition-all duration-200"
+                      style={{ padding: '12px 28px', fontSize: 14, background: '#2563eb', color: '#eeefff', display: 'inline-block' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 0 24px rgba(37,99,235,0.4)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none'; }}
+                    >
+                      Apply Now
+                    </Link>
+                  </motion.div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </section>
 
         {/* ── Application Form ── */}
         <section id="apply" style={{ background: '#0b0e14', padding: '80px 32px', borderTop: '1px solid rgba(67,70,85,0.3)' }}>
           <div style={{ maxWidth: 720, margin: '0 auto' }}>
-            <div className="text-center mb-12">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={VP}
+              variants={fadeUp}
+              className="text-center mb-12"
+            >
               <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{ padding: '6px 16px', background: '#191c22', border: '1px solid rgba(67,70,85,0.5)' }}>
                 <span style={{ fontSize: 11, fontWeight: 600, color: '#b4c5ff', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Ready to Join?</span>
               </div>
               <h2 style={{ fontSize: 'clamp(28px,4vw,40px)', fontWeight: 600, letterSpacing: '-0.02em', color: '#e0e2eb', marginBottom: 12 }}>Submit Your Application</h2>
               <p style={{ fontSize: 16, color: '#8d90a0' }}>Fill out the form below and we'll review your application within 3-5 business days.</p>
-            </div>
+            </motion.div>
 
-            <div className="rounded-[24px]" style={{ padding: '48px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}>
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={VP}
+              variants={popIn}
+              className="rounded-[24px]"
+              style={{ padding: '48px', background: '#191c22', border: '1px solid rgba(67,70,85,0.4)' }}
+            >
               <form className="space-y-5" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
@@ -332,7 +460,8 @@ const Careers = () => {
                   />
                 </div>
 
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
                   type="submit"
                   disabled={isLoading}
                   className="w-full flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-300"
@@ -345,15 +474,19 @@ const Careers = () => {
                 >
                   {isLoading ? 'Submitting...' : 'Submit Application'}
                   {!isLoading && <Send className="w-4 h-4" />}
-                </button>
+                </motion.button>
               </form>
-            </div>
+            </motion.div>
           </div>
         </section>
 
         {/* ── CTA Newsletter ── */}
         <section style={{ background: '#10131a', padding: '80px 32px' }}>
-          <div
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={VP}
+            variants={fadeUp}
             className="max-w-container-max mx-auto rounded-[32px] relative overflow-hidden text-center"
             style={{ background: 'linear-gradient(135deg, #1d2026, #191c22)', border: '1px solid rgba(67,70,85,0.5)', padding: '64px 48px' }}
           >
@@ -376,17 +509,18 @@ const Careers = () => {
                     color: '#e0e2eb', fontSize: 15, outline: 'none', fontFamily: 'Inter, sans-serif',
                   }}
                 />
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.96 }}
                   className="rounded-xl font-semibold shrink-0 transition-all duration-300"
                   style={{ height: 52, padding: '0 24px', fontSize: 14, background: '#2563eb', color: '#eeefff', cursor: 'pointer' }}
                   onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 0 24px rgba(37,99,235,0.4)'; }}
                   onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none'; }}
                 >
                   Get Job Alerts
-                </button>
+                </motion.button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </section>
       </main>
     </>

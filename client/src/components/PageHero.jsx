@@ -1,4 +1,23 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 36 },
+  visible: (delay = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1], delay },
+  }),
+};
+
+const popIn = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: (delay = 0) => ({
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1], delay },
+  }),
+};
 
 const PageHero = ({ subtitle, title, highlightText, description }) => {
   return (
@@ -49,12 +68,19 @@ const PageHero = ({ subtitle, title, highlightText, description }) => {
         style={{ maxWidth: '48rem', margin: '0 auto' }}
       >
         {subtitle && (
-          <div className="inline-flex items-center gap-2 rounded-full mb-6" style={{
-            padding: '6px 16px',
-            background: 'rgba(27,32,38,0.8)',
-            border: '1px solid rgba(67,70,85,0.5)',
-            backdropFilter: 'blur(12px)',
-          }}>
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={popIn}
+            custom={0.05}
+            className="inline-flex items-center gap-2 rounded-full mb-6"
+            style={{
+              padding: '6px 16px',
+              background: 'rgba(27,32,38,0.8)',
+              border: '1px solid rgba(67,70,85,0.5)',
+              backdropFilter: 'blur(12px)',
+            }}
+          >
             <span
               className="w-1.5 h-1.5 rounded-full animate-pulse"
               style={{ background: '#7bd0ff' }}
@@ -70,10 +96,14 @@ const PageHero = ({ subtitle, title, highlightText, description }) => {
             >
               {subtitle}
             </span>
-          </div>
+          </motion.div>
         )}
 
-        <h1
+        <motion.h1
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+          custom={0.15}
           style={{
             fontSize: 'clamp(36px, 5vw, 56px)',
             fontWeight: 700,
@@ -87,10 +117,14 @@ const PageHero = ({ subtitle, title, highlightText, description }) => {
           {highlightText && (
             <span className="text-gradient">{highlightText}</span>
           )}
-        </h1>
+        </motion.h1>
 
         {description && (
-          <p
+          <motion.p
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={0.28}
             style={{
               fontSize: 18,
               lineHeight: 1.65,
@@ -100,7 +134,7 @@ const PageHero = ({ subtitle, title, highlightText, description }) => {
             }}
           >
             {description}
-          </p>
+          </motion.p>
         )}
       </div>
     </section>
