@@ -1,159 +1,300 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Circle } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+
+const portfolioProjects = [
+  {
+    id: 1,
+    span: 'md:col-span-8 md:row-span-2',
+    tags: ['FINTECH', 'BLOCKCHAIN'],
+    title: 'VaultX Banking Core',
+    desc: 'A high-performance digital core banking solution built for scalability and secure real-time transactions.',
+    gradient: 'linear-gradient(to top, rgba(11,14,20,0.9) 0%, rgba(11,14,20,0.3) 60%, transparent 100%)',
+    bg: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1600',
+    large: true,
+  },
+  {
+    id: 2,
+    span: 'md:col-span-4 md:row-span-1',
+    title: 'Nexus AI',
+    sub: 'AI & AUTOMATION',
+    gradient: 'linear-gradient(to top, rgba(11,14,20,0.8) 0%, transparent 60%)',
+    bg: 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?auto=format&fit=crop&q=80&w=800',
+  },
+  {
+    id: 3,
+    span: 'md:col-span-4 md:row-span-2',
+    title: 'Aura Boutique',
+    sub: 'E-COMMERCE',
+    tags: ['REACT NATIVE', 'NODE.JS'],
+    gradient: 'linear-gradient(to top, rgba(11,14,20,0.9) 0%, transparent 60%)',
+    bg: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&q=80&w=800',
+  },
+  {
+    id: 4,
+    span: 'md:col-span-8 md:row-span-1',
+    title: 'SkyStack Cloud',
+    sub: 'CLOUD PLATFORM',
+    desc: 'Enterprise-grade cloud migration for a global logistics leader.',
+    gradient: 'linear-gradient(to right, rgba(11,14,20,0.95) 0%, transparent 60%)',
+    bg: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=1400',
+  },
+];
+
+const testimonials = [
+  {
+    quote: '"Rogerex India transformed our legacy systems into a modern cloud-native powerhouse. Their technical depth and mission-driven approach are unmatched."',
+    name: 'Marcus Chen',
+    role: 'CTO, FINSYNC TECH',
+  },
+  {
+    quote: '"The UI/UX design team at Rogerex has a rare eye for detail. They didn\'t just build an app — they crafted an experience that our users love."',
+    name: 'Sarah Jenkins',
+    role: 'FOUNDER, AURA RETAIL',
+  },
+];
+
+const categories = ['All Projects', 'Fintech', 'AI Solutions', 'E-commerce', 'Cloud Platforms'];
 
 const Portfolio = () => {
   return (
     <>
-      
-<main>
-{/*  Hero Section  */}
-<section className="relative pt-section-padding-sm md:pt-section-padding-lg pb-16 px-8 max-w-container-max mx-auto overflow-hidden">
-<div className="absolute top-0 right-0 -z-10 opacity-20 transform translate-x-1/4 -translate-y-1/4">
+      <main>
+        {/* ── Hero ── */}
+        <section
+          className="relative overflow-hidden"
+          style={{ background: '#10131a', padding: '96px 32px 64px' }}
+        >
+          <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: 600, height: 300, borderRadius: '50%', background: 'rgba(37,99,235,0.15)', filter: 'blur(100px)', pointerEvents: 'none' }} />
+          <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
 
-</div>
-<div className="max-w-3xl">
-<span className="font-label-caps text-label-caps text-primary mb-4 block">Our Portfolio</span>
-<h1 className="font-display-lg text-headline-lg md:text-display-lg text-on-background mb-6">
-                    Showcasing our <span className="text-primary">Technical Craftsmanship</span>.
-                </h1>
-<p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-                    Explore our journey of transforming ambitious ideas into scalable digital realities across Fintech, AI, and Enterprise solutions.
-                </p>
-</div>
-</section>
-{/*  Category Filter  */}
-<section className="px-8 max-w-container-max mx-auto mb-12">
-<div className="flex flex-wrap gap-4 items-center">
-<button className="px-6 py-2 rounded-full bg-primary text-on-primary font-body-md transition-all">All Projects</button>
-<button className="px-6 py-2 rounded-full bg-soft-highlight/10 text-on-surface hover:bg-soft-highlight/20 transition-all font-body-md border border-outline-variant/30">Fintech</button>
-<button className="px-6 py-2 rounded-full bg-soft-highlight/10 text-on-surface hover:bg-soft-highlight/20 transition-all font-body-md border border-outline-variant/30">AI Solutions</button>
-<button className="px-6 py-2 rounded-full bg-soft-highlight/10 text-on-surface hover:bg-soft-highlight/20 transition-all font-body-md border border-outline-variant/30">E-commerce</button>
-<button className="px-6 py-2 rounded-full bg-soft-highlight/10 text-on-surface hover:bg-soft-highlight/20 transition-all font-body-md border border-outline-variant/30">Cloud Platforms</button>
-</div>
-</section>
-{/*  Portfolio Bento Grid  */}
-<section className="px-8 max-w-container-max mx-auto mb-section-padding-lg">
-<div className="grid grid-cols-1 md:grid-cols-12 gap-8 auto-rows-[300px]">
-{/*  Project Card 1: Fintech (Large)  */}
-<div className="md:col-span-8 md:row-span-2 group relative overflow-hidden rounded-[32px] bg-white ambient-shadow transition-all duration-500">
-<div className="absolute inset-0 z-10 bg-gradient-to-t from-on-background/80 via-on-background/20 to-transparent"></div>
-<div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="A sophisticated Fintech dashboard UI displayed on a sleek laptop screen within a minimalist office setting. The interface features complex data visualizations, real-time stock charts, and a clean typography system using a palette of deep navy and crisp white. The surrounding environment is bright and airy with soft-focus plants and warm wood textures, emphasizing a premium professional atmosphere." style={{"backgroundImage":"url('https"}}></div>
-<div className="absolute bottom-0 left-0 p-10 z-20 w-full transform translate-y-4 group-hover:translate-y-0 transition-transform">
-<div className="flex gap-2 mb-4">
-<span className="px-3 py-1 rounded-lg bg-primary-fixed/20 backdrop-blur-md text-primary font-label-caps text-[10px]">FINTECH</span>
-<span className="px-3 py-1 rounded-lg bg-surface-container-lowest/20 backdrop-blur-md text-white font-label-caps text-[10px]">BLOCKCHAIN</span>
-</div>
-<h3 className="font-headline-lg text-headline-lg text-white mb-2">VaultX Banking Core</h3>
-<p className="text-white/80 font-body-md mb-6 max-w-lg opacity-0 group-hover:opacity-100 transition-opacity">A high-performance digital core banking solution built for scalability and secure real-time transactions.</p>
-<div className="flex items-center gap-4">
-<button className="flex items-center gap-2 text-white font-semibold group/btn">
-                                View Case Study <ArrowRight className="w-6 h-6 text-current" />
-</button>
-</div>
-</div>
-</div>
-{/*  Project Card 2: AI Solution (Standard)  */}
-<div className="md:col-span-4 md:row-span-1 group relative overflow-hidden rounded-[32px] bg-white ambient-shadow">
-<div className="absolute inset-0 z-10 bg-gradient-to-t from-on-background/60 to-transparent"></div>
-<div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="Abstract digital representation of an AI neural network with glowing orange and gold particles connecting in a dark space. The aesthetic is high-tech and energetic, symbolizing machine learning and intelligent automation. The lighting is focused and dramatic, contrasting sharp glowing lines with a deep background, fitting the Rogerex premium brand identity." style={{"backgroundImage":"url('https"}}></div>
-<div className="absolute inset-0 p-8 flex flex-col justify-end z-20">
-<h4 className="font-headline-md text-white mb-1">Nexus AI</h4>
-<p className="text-white/70 font-label-caps text-[11px]">AI &amp; AUTOMATION</p>
-</div>
-</div>
-{/*  Project Card 3: E-commerce (Portrait)  */}
-<div className="md:col-span-4 md:row-span-2 group relative overflow-hidden rounded-[32px] bg-white ambient-shadow">
-<div className="absolute inset-0 z-10 bg-gradient-to-t from-on-background/80 to-transparent"></div>
-<div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="A luxury e-commerce mobile application interface featuring high-end fashion photography. The screen shows a clean product page with elegant typography and large, high-resolution imagery. The background is a soft beige tone matching the Rogerex bone-colored palette, creating a seamless and sophisticated mobile shopping experience." style={{"backgroundImage":"url('https"}}></div>
-<div className="absolute inset-0 p-8 flex flex-col justify-end z-20">
-<h4 className="font-headline-md text-white mb-1">Aura Boutique</h4>
-<p className="text-white/70 font-label-caps text-[11px] mb-4">E-COMMERCE</p>
-<div className="flex flex-wrap gap-2">
-<span className="text-[10px] text-white/60 font-label-caps px-2 py-1 border border-white/20 rounded">REACT NATIVE</span>
-<span className="text-[10px] text-white/60 font-label-caps px-2 py-1 border border-white/20 rounded">NODE.JS</span>
-</div>
-</div>
-</div>
-{/*  Project Card 4: Cloud (Wide)  */}
-<div className="md:col-span-8 md:row-span-1 group relative overflow-hidden rounded-[32px] bg-white ambient-shadow">
-<div className="absolute inset-0 z-10 bg-gradient-to-r from-on-background/90 to-transparent"></div>
-<div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="Modern server room with glowing blue and amber status lights, representing a secure cloud infrastructure. The image is captured with a shallow depth of field, highlighting the precision of the hardware. The color palette incorporates cool tech-blue and the warm primary orange of the Rogerex brand, suggesting reliability and speed." style={{"backgroundImage":"url('https"}}></div>
-<div className="absolute inset-0 p-10 flex flex-col justify-center z-20 max-w-md">
-<h4 className="font-headline-md text-white mb-2">SkyStack Cloud</h4>
-<p className="text-white/70 font-body-md">Enterprise-grade cloud migration for a global logistics leader.</p>
-</div>
-</div>
-</div>
-</section>
-{/*  Testimonials Section  */}
-<section className="bg-surface-container py-section-padding-lg overflow-hidden">
-<div className="px-8 max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
-<div className="md:col-span-4 mb-12 md:mb-0">
-<span className="font-label-caps text-label-caps text-primary mb-4 block">Testimonials</span>
-<h2 className="font-headline-lg text-headline-lg text-on-background mb-6">Client Success Stories</h2>
-<p className="text-on-surface-variant font-body-md mb-8">
-                        Our commitment to "Customer Success" is at the heart of everything we build. Hear from the visionaries we've partnered with.
+          <div className="relative z-10 max-w-container-max mx-auto max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full mb-6" style={{
+              padding: '6px 16px', background: '#1d2026',
+              border: '1px solid rgba(67,70,85,0.5)',
+            }}>
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#7bd0ff' }} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: '#a4c9ff', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Our Portfolio</span>
+            </div>
+            <h1 style={{ fontSize: 'clamp(36px,5vw,56px)', fontWeight: 700, letterSpacing: '-0.025em', color: '#e0e2eb', marginBottom: 20, lineHeight: 1.1 }}>
+              Showcasing our{' '}
+              <span className="text-gradient">Technical Craftsmanship</span>
+            </h1>
+            <p style={{ fontSize: 18, lineHeight: 1.65, color: '#8d90a0', maxWidth: 600 }}>
+              Explore our journey of transforming ambitious ideas into scalable digital realities across Fintech, AI, and Enterprise solutions.
+            </p>
+          </div>
+        </section>
+
+        {/* ── Category Filter ── */}
+        <section style={{ background: '#10131a', padding: '0 32px 32px' }}>
+          <div className="max-w-container-max mx-auto flex flex-wrap gap-3">
+            {categories.map((cat, i) => (
+              <button
+                key={cat}
+                className="rounded-full font-medium transition-all duration-200"
+                style={{
+                  padding: '8px 20px', fontSize: 14,
+                  background: i === 0 ? '#2563eb' : '#191c22',
+                  color: i === 0 ? '#eeefff' : '#c3c6d7',
+                  border: i === 0 ? 'none' : '1px solid rgba(67,70,85,0.4)',
+                  cursor: 'pointer',
+                }}
+                onMouseEnter={(e) => {
+                  if (i !== 0) {
+                    e.currentTarget.style.borderColor = 'rgba(180,197,255,0.3)';
+                    e.currentTarget.style.color = '#e0e2eb';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (i !== 0) {
+                    e.currentTarget.style.borderColor = 'rgba(67,70,85,0.4)';
+                    e.currentTarget.style.color = '#c3c6d7';
+                  }
+                }}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* ── Portfolio Bento Grid ── */}
+        <section style={{ background: '#10131a', padding: '0 32px 80px' }}>
+          <div
+            className="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-12 gap-6"
+            style={{ gridAutoRows: '280px' }}
+          >
+            {portfolioProjects.map((proj) => (
+              <div
+                key={proj.id}
+                className={`${proj.span} group relative overflow-hidden rounded-[24px]`}
+                style={{
+                  border: '1px solid rgba(67,70,85,0.4)',
+                  cursor: 'pointer',
+                }}
+              >
+                {/* BG image */}
+                <div
+                  className="absolute inset-0 transition-transform duration-700 group-hover:scale-110 bg-cover bg-center"
+                  style={{ backgroundImage: `url('${proj.bg}')` }}
+                />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 z-10" style={{ background: proj.gradient }} />
+                {/* Border glow on hover */}
+                <div
+                  className="absolute inset-0 z-20 rounded-[24px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ boxShadow: 'inset 0 0 0 1px rgba(180,197,255,0.2)' }}
+                />
+
+                {/* Content */}
+                {proj.large ? (
+                  <div
+                    className="absolute bottom-0 left-0 p-8 z-30 w-full transition-transform duration-300"
+                    style={{ transform: 'translateY(4px)' }}
+                  >
+                    <div className="flex gap-2 mb-3">
+                      {proj.tags?.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-lg"
+                          style={{
+                            padding: '4px 10px', fontSize: 10, fontWeight: 600,
+                            background: 'rgba(180,197,255,0.15)', color: '#b4c5ff',
+                            border: '1px solid rgba(180,197,255,0.2)',
+                            backdropFilter: 'blur(8px)',
+                          }}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <h3 style={{ fontSize: 28, fontWeight: 700, color: '#fff', marginBottom: 8, letterSpacing: '-0.02em' }}>{proj.title}</h3>
+                    <p className="opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', maxWidth: 500, marginBottom: 20, lineHeight: 1.6 }}>
+                      {proj.desc}
                     </p>
-<div className="flex gap-4">
-<button className="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center hover:bg-white transition-all">
-<Circle className="w-6 h-6 text-current" />
-</button>
-<button className="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center hover:bg-white transition-all">
-<Circle className="w-6 h-6 text-current" />
-</button>
-</div>
-</div>
-<div className="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-{/*  Testimonial 1  */}
-<div className="bg-white p-8 rounded-[32px] ambient-shadow relative">
-<Circle className="w-6 h-6 text-current" />
-<p className="text-on-surface-variant font-body-md italic mb-8 leading-relaxed">
-                            "Rogerex India transformed our legacy systems into a modern cloud-native powerhouse. Their technical depth and mission-driven approach are unmatched."
-                        </p>
-<div className="flex items-center gap-4">
-<div className="w-12 h-12 rounded-full bg-surface-container-highest overflow-hidden">
-<img className="w-full h-full object-cover" data-alt="Professional portrait of a middle-aged male executive in a neutral gray suit, smiling confidently against a soft-focus office background. The lighting is professional and warm, conveying trust and leadership, styled in a clean modern aesthetic for a testimonial section." src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=800"/>
-</div>
-<div>
-<p className="font-bold text-on-surface">Marcus Chen</p>
-<p className="text-xs text-text-muted font-label-caps">CTO, FINSYNC TECH</p>
-</div>
-</div>
-</div>
-{/*  Testimonial 2  */}
-<div className="bg-white p-8 rounded-[32px] ambient-shadow relative mt-8 md:mt-12">
-<Circle className="w-6 h-6 text-current" />
-<p className="text-on-surface-variant font-body-md italic mb-8 leading-relaxed">
-                            "The UI/UX design team at Rogerex has a rare eye for detail. They didn't just build an app; they crafted an experience that our users love."
-                        </p>
-<div className="flex items-center gap-4">
-<div className="w-12 h-12 rounded-full bg-surface-container-highest overflow-hidden">
-<img className="w-full h-full object-cover" data-alt="Portrait of a female entrepreneur with a creative and modern style, wearing stylish glasses and a neutral knit sweater. She has an approachable, intelligent expression. The background is a minimalist studio with warm lighting, maintaining the premium minimalist SaaS agency aesthetic." src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=800"/>
-</div>
-<div>
-<p className="font-bold text-on-surface">Sarah Jenkins</p>
-<p className="text-xs text-text-muted font-label-caps">FOUNDER, AURA RETAIL</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-{/*  CTA Section  */}
-<section className="py-section-padding-lg px-8 max-w-container-max mx-auto text-center">
-<div className="bg-on-background rounded-[48px] py-16 px-8 relative overflow-hidden">
+                    <button className="flex items-center gap-2 font-semibold" style={{ color: '#b4c5ff', fontSize: 14 }}>
+                      View Case Study <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="absolute inset-0 p-6 flex flex-col justify-end z-30">
+                    <h4 style={{ fontSize: 20, fontWeight: 600, color: '#fff', marginBottom: 4 }}>{proj.title}</h4>
+                    {proj.sub && (
+                      <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.06em', fontWeight: 600 }}>{proj.sub}</p>
+                    )}
+                    {proj.desc && (
+                      <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', marginTop: 6, lineHeight: 1.5 }}>{proj.desc}</p>
+                    )}
+                    {proj.tags && (
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        {proj.tags.map((tag) => (
+                          <span key={tag} style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', fontWeight: 600, letterSpacing: '0.04em', padding: '3px 8px', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 4 }}>
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
 
-<div className="relative z-10 max-w-2xl mx-auto">
-<h2 className="font-headline-lg text-headline-lg text-white mb-6">Ready to build your next big idea?</h2>
-<p className="text-white/70 font-body-lg mb-10">Let's transform your vision into a scalable technology solution today.</p>
-<Link className="inline-block bg-primary text-on-primary px-10 py-4 rounded-2xl font-bold text-body-md transition-transform hover:scale-105 active:scale-95 shadow-xl shadow-primary/20" to="/contact">
-                        Start Your Project
-                    </Link>
-</div>
-</div>
-</section>
-</main>
+        {/* ── Testimonials ── */}
+        <section style={{ background: '#0b0e14', padding: '80px 32px', borderTop: '1px solid rgba(67,70,85,0.3)' }}>
+          <div className="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
+            <div className="md:col-span-4">
+              <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{
+                padding: '6px 16px', background: '#191c22',
+                border: '1px solid rgba(67,70,85,0.5)',
+              }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: '#a4c9ff', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                  Testimonials
+                </span>
+              </div>
+              <h2 style={{ fontSize: 'clamp(24px,3vw,36px)', fontWeight: 600, letterSpacing: '-0.02em', color: '#e0e2eb', marginBottom: 16 }}>
+                Client Success Stories
+              </h2>
+              <p style={{ fontSize: 15, lineHeight: 1.7, color: '#8d90a0' }}>
+                Our commitment to "Customer Success" is at the heart of everything we build.
+              </p>
+            </div>
+
+            <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+              {testimonials.map(({ quote, name, role }, i) => (
+                <div
+                  key={name}
+                  className="rounded-[24px]"
+                  style={{
+                    padding: '32px',
+                    background: '#191c22',
+                    border: '1px solid rgba(67,70,85,0.4)',
+                    marginTop: i === 1 ? '32px' : 0,
+                    position: 'relative',
+                  }}
+                >
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent, rgba(180,197,255,0.15), transparent)' }} />
+                  <span className="material-symbols-outlined" style={{ fontSize: 32, color: '#b4c5ff', opacity: 0.5, marginBottom: 16, display: 'block' }}>
+                    format_quote
+                  </span>
+                  <p style={{ fontSize: 15, lineHeight: 1.7, color: '#c3c6d7', fontStyle: 'italic', marginBottom: 24 }}>
+                    {quote}
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(37,99,235,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span className="material-symbols-outlined" style={{ fontSize: 20, color: '#b4c5ff' }}>person</span>
+                    </div>
+                    <div>
+                      <p style={{ fontSize: 14, fontWeight: 600, color: '#e0e2eb' }}>{name}</p>
+                      <p style={{ fontSize: 11, color: '#8d90a0', letterSpacing: '0.06em', fontWeight: 600 }}>{role}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── CTA ── */}
+        <section style={{ background: '#10131a', padding: '80px 32px' }}>
+          <div
+            className="max-w-container-max mx-auto rounded-[40px] relative overflow-hidden text-center"
+            style={{
+              background: 'linear-gradient(135deg, #1d2026, #191c22)',
+              border: '1px solid rgba(67,70,85,0.5)',
+              padding: '80px 48px',
+            }}
+          >
+            <div style={{ position: 'absolute', top: -40, left: '25%', width: 300, height: 200, borderRadius: '50%', background: 'rgba(37,99,235,0.2)', filter: 'blur(80px)', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent, rgba(180,197,255,0.3), transparent)' }} />
+
+            <div className="relative z-10 max-w-2xl mx-auto">
+              <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.02em', color: '#e0e2eb', marginBottom: 16 }}>
+                Ready to build your next big idea?
+              </h2>
+              <p style={{ fontSize: 18, color: '#8d90a0', marginBottom: 40, lineHeight: 1.6 }}>
+                Let's transform your vision into a scalable technology solution today.
+              </p>
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-2 rounded-full font-semibold transition-all duration-300"
+                style={{
+                  padding: '14px 36px', fontSize: 15,
+                  background: '#2563eb', color: '#eeefff',
+                  boxShadow: '0 0 32px rgba(37,99,235,0.45)',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 0 52px rgba(37,99,235,0.65)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 0 32px rgba(37,99,235,0.45)'; }}
+              >
+                Start Your Project
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
     </>
   );
 };

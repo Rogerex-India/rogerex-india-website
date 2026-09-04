@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
 // Layout components
-import Hader from './components/Header';
+import Header from './components/Header';
 import Footer from './components/Footer';
 
 // Pages
@@ -17,9 +17,26 @@ import Contact from './pages/Contact';
 function App() {
   return (
     <BrowserRouter>
-      <div className="bg-background-bone text-on-surface font-body-md min-h-screen flex flex-col">
-        <Toaster position="top-right" />
-        <Hader />
+      <div className="min-h-screen flex flex-col" style={{ background: '#10131a', color: '#e0e2eb' }}>
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: {
+              background: '#1d2026',
+              color: '#e0e2eb',
+              border: '1px solid rgba(67,70,85,0.5)',
+              borderRadius: '12px',
+              fontFamily: 'Inter, sans-serif',
+            },
+            success: {
+              iconTheme: { primary: '#7bd0ff', secondary: '#10131a' },
+            },
+            error: {
+              iconTheme: { primary: '#ffb4ab', secondary: '#10131a' },
+            },
+          }}
+        />
+        <Header />
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
