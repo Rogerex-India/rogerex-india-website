@@ -1,69 +1,191 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/icons2.png';
-import { Globe, AtSign, Mail, MapPin } from 'lucide-react';
+
+const footerLinks = {
+  Solutions: [
+    { label: 'Software Dev',    path: '/services' },
+    { label: 'Cloud Solutions', path: '/services' },
+    { label: 'AI & Automation', path: '/services' },
+    { label: 'UI/UX Design',    path: '/services' },
+    { label: 'Mobile Apps',     path: '/services' },
+  ],
+  Company: [
+    { label: 'About Us',   path: '/about' },
+    { label: 'Portfolio',  path: '/portfolio' },
+    { label: 'Careers',    path: '/careers' },
+    { label: 'Contact',    path: '/contact' },
+  ],
+  Legal: [
+    { label: 'Privacy Policy',   path: '#' },
+    { label: 'Terms of Service', path: '#' },
+  ],
+};
 
 const Footer = () => {
   return (
-    <>
-      <footer className="w-full py-section-padding-sm bg-gray-100 dark:bg-gray-800 border-t border-gray-300 dark:border-gray-700">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-gutter px-8 max-w-container-max mx-auto">
-          {/* Brand Column */}
-          <div className="col-span-1 md:col-span-1">
-            <div className="flex items-center gap-3 mb-6">
-              <img alt="Logo" className="h-8 w-auto grayscale brightness-0 dark:brightness-100" src={logo} />
-              <span className="font-headline-md text-headline-md text-primary dark:text-primary-fixed text-2xl">Rogerex</span>
-            </div>
-            <p className="font-body-md text-body-md text-on-surface-variant dark:text-gray-300 mb-6">
-              Leading the digital transformation journey for enterprises globally.
+    <footer
+      style={{
+        background: 'var(--bg-alt)',
+        borderTop: '1px solid var(--border-color-subtle)',
+        transition: 'background-color 0.3s ease',
+      }}
+    >
+      {/* Main footer grid */}
+      <div
+        className="max-w-container-max mx-auto"
+        style={{ padding: '80px 32px 48px' }}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+          {/* Brand */}
+          <div className="md:col-span-4">
+            <Link to="/" className="flex items-center gap-3 mb-5">
+              <img alt="Logo" className="h-8 w-auto object-contain" src={logo} />
+              <span
+                className="font-semibold tracking-tight"
+                style={{ fontSize: 20, color: 'var(--text-main)' }}
+              >
+                Rogerex India
+              </span>
+            </Link>
+            <p style={{ fontSize: 15, lineHeight: 1.7, color: 'var(--text-muted)', maxWidth: 300 }}>
+              Leading the digital transformation journey for enterprises globally through
+              innovative, scalable, and reliable tech solutions.
             </p>
-            <div className="flex gap-4">
-              <a className="w-10 h-10 rounded-full bg-surface-container-low dark:bg-gray-700 flex items-center justify-center hover:bg-primary/10 transition-colors" href="#">
-                <Globe className="text-primary w-5 h-5" />
-              </a>
-              <a className="w-10 h-10 rounded-full bg-surface-container-low dark:bg-gray-700 flex items-center justify-center hover:bg-primary/10 transition-colors" href="#">
-                <AtSign className="text-primary w-5 h-5" />
-              </a>
+
+            {/* Social icons */}
+            <div className="flex gap-3 mt-6">
+              {[
+                {
+                  label: 'LinkedIn',
+                  icon: (
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                      <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
+                      <circle cx="4" cy="4" r="2"/>
+                    </svg>
+                  ),
+                },
+                {
+                  label: 'Twitter',
+                  icon: (
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                      <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+                    </svg>
+                  ),
+                },
+                {
+                  label: 'GitHub',
+                  icon: (
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/>
+                    </svg>
+                  ),
+                },
+              ].map(({ label, icon }) => (
+                <a
+                  key={label}
+                  href="#"
+                  aria-label={label}
+                  className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200"
+                  style={{
+                    background: 'var(--bg-container)',
+                    color: 'var(--text-muted)',
+                    border: '1px solid var(--border-color)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#2563eb';
+                    e.currentTarget.style.color = '#ffffff';
+                    e.currentTarget.style.borderColor = '#2563eb';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'var(--bg-container)';
+                    e.currentTarget.style.color = 'var(--text-muted)';
+                    e.currentTarget.style.borderColor = 'var(--border-color)';
+                  }}
+                >
+                  {icon}
+                </a>
+              ))}
             </div>
           </div>
-          {/* Quick Links */}
-          {/* <div className="col-span-1">
-            <h5 className="font-headline-md text-lg mb-6 dark:text-white">Solutions</h5>
+
+          {/* Link Columns */}
+          {Object.entries(footerLinks).map(([title, links]) => (
+            <div key={title} className="md:col-span-2">
+              <h5
+                className="font-semibold mb-5 uppercase tracking-widest"
+                style={{ fontSize: 11, color: 'var(--text-muted)', letterSpacing: '0.1em' }}
+              >
+                {title}
+              </h5>
+              <ul className="flex flex-col gap-3">
+                {links.map(({ label, path }) => (
+                  <li key={label}>
+                    <Link
+                      to={path}
+                      style={{ fontSize: 14, color: 'var(--text-main)', transition: 'color 0.2s' }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = '#2563eb')}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-main)')}
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+
+          {/* Contact Column */}
+          <div className="md:col-span-2">
+            <h5
+              className="font-semibold mb-5 uppercase tracking-widest"
+              style={{ fontSize: 11, color: 'var(--text-muted)', letterSpacing: '0.1em' }}
+            >
+              Contact
+            </h5>
             <ul className="flex flex-col gap-3">
-              <li><Link className="text-on-surface-variant dark:text-gray-300 hover:text-primary transition-colors" to="/services">Software Dev</Link></li>
-              <li><Link className="text-on-surface-variant dark:text-gray-300 hover:text-primary transition-colors" to="/services">Cloud Migrations</Link></li>
-              <li><Link className="text-on-surface-variant dark:text-gray-300 hover:text-primary transition-colors" to="/services">AI Strategy</Link></li>
-              <li><Link className="text-on-surface-variant dark:text-gray-300 hover:text-primary transition-colors" to="/services">Product Design</Link></li>
-            </ul>
-          </div> */}
-          {/* Contact */}
-          <div className="col-span-1">
-            <h5 className="font-headline-md text-lg mb-6 dark:text-white">Contact</h5>
-            <ul className="flex flex-col gap-3">
-              <li className="flex items-center gap-2">
-                <Mail className="text-primary w-5 h-5" />
-                <a className="text-on-surface-variant dark:text-gray-300 hover:text-primary transition-colors" href="mailto:rogerexindia@gmail.com">rogerexindia@gmail.com</a>
+              <li>
+                <a
+                  href="mailto:rogerexindia@gmail.com"
+                  style={{ fontSize: 14, color: 'var(--text-main)', transition: 'color 0.2s' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#2563eb')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-main)')}
+                >
+                  rogerexindia@gmail.com
+                </a>
               </li>
-              <li className="flex items-center gap-2">
-                <MapPin className="text-primary w-5 h-5" />
-                <span className="text-on-surface-variant dark:text-gray-300">Mumbai, India</span>
-              </li>
+              <li style={{ fontSize: 14, color: 'var(--text-muted)' }}>Bengaluru, Karnataka</li>
+              <li style={{ fontSize: 14, color: 'var(--text-muted)' }}>India</li>
             </ul>
-          </div>
-          {/* Legal & Copyright */}
-          <div className="col-span-1">
-            <h5 className="font-headline-md text-lg mb-6 dark:text-white">Legal</h5>
-            <ul className="flex flex-col gap-3 mb-8">
-              <li><Link className="text-on-surface-variant dark:text-gray-300 hover:text-primary transition-colors" to="#">Privacy Policy</Link></li>
-              <li><Link className="text-on-surface-variant dark:text-gray-300 hover:text-primary transition-colors" to="#">Terms of Service</Link></li>
-            </ul>
-            <p className="text-sm text-text-muted dark:text-gray-400">
-              © 2026 Rogerex India. All rights reserved.
-            </p>
           </div>
         </div>
-      </footer>
-    </>
+      </div>
+
+      {/* Bottom bar */}
+      <div
+        style={{
+          borderTop: '1px solid var(--border-color-subtle)',
+          padding: '20px 32px',
+        }}
+      >
+        <div
+          className="max-w-container-max mx-auto flex flex-col sm:flex-row items-center justify-between gap-4"
+        >
+          <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+            © 2026 Rogerex India. All rights reserved.
+          </p>
+          <div className="flex items-center gap-2">
+            <span
+              className="w-1.5 h-1.5 rounded-full animate-pulse"
+              style={{ background: '#2563eb' }}
+            />
+            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+              Systems Operational
+            </span>
+          </div>
+        </div>
+      </div>
+    </footer>
   );
 };
 

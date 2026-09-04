@@ -1,26 +1,92 @@
 import React from 'react';
 
 const ServiceCard = ({ icon, title, description, variant = 'page', className = '' }) => {
-  if (variant === 'home') {
-    return (
-      <div className={`bg-white p-10 rounded-[20px] ambient-glow border border-text-muted/10 transition-transform hover:-translate-y-2 group ${className}`}>
-        <div className="w-14 h-14 bg-secondary-container/30 rounded-[12px] flex items-center justify-center mb-6 group-hover:bg-primary/10 transition-colors">
-          {icon}
-        </div>
-        <h3 className="font-headline-md text-headline-md text-2xl mb-4">{title}</h3>
-        <p className="text-on-surface-variant leading-relaxed">{description}</p>
-      </div>
-    );
-  }
+  const cardStyle = {
+    background: 'var(--bg-card)',
+    border: '1px solid var(--border-color)',
+    borderRadius: 20,
+    padding: variant === 'home' ? 32 : 40,
+    transition: 'all 0.3s ease',
+    position: 'relative',
+    overflow: 'hidden',
+  };
 
-  // default variant="page"
+  const iconWrapStyle = {
+    width: 52,
+    height: 52,
+    borderRadius: 14,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+    background: 'rgba(37,99,235,0.12)',
+    color: '#2563eb',
+    border: '1px solid var(--border-color)',
+    transition: 'all 0.3s ease',
+  };
+
   return (
-    <div className={`service-card bg-white p-10 rounded-[20px] border border-outline-variant/10 shadow-sm shadow-secondary/5 ${className}`}>
-      <div className="w-14 h-14 bg-secondary/10 rounded-xl flex items-center justify-center text-secondary mb-8">
+    <div
+      className={`group ${className}`}
+      style={cardStyle}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = 'rgba(37,99,235,0.4)';
+        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.boxShadow = '0 16px 48px -12px var(--shadow-color)';
+        const iconWrap = e.currentTarget.querySelector('.icon-wrap');
+        if (iconWrap) {
+          iconWrap.style.background = 'rgba(37,99,235,0.2)';
+          iconWrap.style.borderColor = '#2563eb';
+        }
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = 'var(--border-color)';
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = 'none';
+        const iconWrap = e.currentTarget.querySelector('.icon-wrap');
+        if (iconWrap) {
+          iconWrap.style.background = 'rgba(37,99,235,0.12)';
+          iconWrap.style.borderColor = 'var(--border-color)';
+        }
+      }}
+    >
+      {/* Subtle top glow accent */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '60%',
+          height: 1,
+          background: 'linear-gradient(90deg, transparent, rgba(37,99,235,0.25), transparent)',
+        }}
+      />
+
+      <div className="icon-wrap" style={iconWrapStyle}>
         {icon}
       </div>
-      <h3 className="font-headline-md text-headline-md mb-4">{title}</h3>
-      <p className="text-on-surface-variant font-body-md leading-relaxed">{description}</p>
+
+      <h3
+        style={{
+          fontSize: 20,
+          fontWeight: 600,
+          color: 'var(--text-main)',
+          marginBottom: 12,
+          letterSpacing: '-0.01em',
+        }}
+      >
+        {title}
+      </h3>
+      <p
+        style={{
+          fontSize: 15,
+          lineHeight: 1.65,
+          color: 'var(--text-muted)',
+        }}
+      >
+        {description}
+      </p>
     </div>
   );
 };
