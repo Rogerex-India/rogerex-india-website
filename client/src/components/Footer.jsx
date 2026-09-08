@@ -174,14 +174,25 @@ const Footer = () => {
           <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>
             © 2026 Rogerex India. All rights reserved.
           </p>
-          <div className="flex items-center gap-2">
-            <span
-              className="w-1.5 h-1.5 rounded-full animate-pulse"
-              style={{ background: '#2563eb' }}
-            />
-            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-              Systems Operational
-            </span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span
+                className="w-1.5 h-1.5 rounded-full animate-pulse"
+                style={{ background: '#2563eb' }}
+              />
+              <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                Systems Operational
+              </span>
+            </div>
+            <span style={{ color: 'var(--border-color)' }}>•</span>
+            <Link
+              to="/admin/login"
+              style={{ fontSize: 12, color: 'var(--text-muted)', transition: 'color 0.2s' }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#2563eb')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
+            >
+              Admin Portal
+            </Link>
           </div>
         </div>
       </div>
