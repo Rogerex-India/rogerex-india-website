@@ -1,5 +1,7 @@
-const { sendEmail } = require("../config/mailer");
+const Career = require("../models/Career");
+const cloudinary = require("../config/cloudinary");
 const { isValidEmail, isValidPhone, isFieldEmpty } = require("../middleware/validation");
+const streamifier = require("streamifier");
 
 const submitCareer = async (req, res) => {
   try {
@@ -54,51 +56,44 @@ const submitCareer = async (req, res) => {
       coverLetter: coverLetter.trim(),
     };
 
-    // Prepare email HTML content
-    const htmlContent = `
-      <h2 style="color:#333;">New Career Application</h2>
-      <p><strong>Applicant Name:</strong> ${trimmedData.name}</p>
-      <p><strong>Email:</strong> ${trimmedData.email}</p>
-      <p><strong>Phone:</strong> ${trimmedData.phone}</p>
-      <p><strong>College:</strong> ${trimmedData.college}</p>
-      <p><strong>Applied Role:</strong> ${trimmedData.role}</p>
-      <p><strong>Cover Letter:</strong></p>
-      <p>${trimmedData.coverLetter.replace(/\n/g, "<br>")}</p>
-      <hr/>
-      <p style="color:#888; font-size:12px;">Resume is attached to this email.</p>
-    `;
+    // Upload to Cloudinary using streamifier
+    const uploadFromBuffer = (req) => {
+      return new Promise((resolve, reject) => {
+        const cld_upload_stream = cloudinary.uploader.upload_stream(
+          {
+            folder: "careers",
+            resource_type: "auto", // Let Cloudinary auto-detect (fixes 403 for PDFs on some accounts)
+            use_filename: true,
+            unique_filename: true,
+          },
+          (error, result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(error);
+            }
+          }
+        );
 
-    // Build mail options with resume attached from memory buffer
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_TO,
-      replyTo: trimmedData.email,
-      subject: `Career Application: ${trimmedData.role} — ${trimmedData.name}`,
-      html: htmlContent,
-      attachments: [
-        {
-          filename: req.file.originalname,
-          content: req.file.buffer,
-          contentType: req.file.mimetype,
-        },
-      ],
+        streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
+      });
     };
 
-    const emailResult = await sendEmail(mailOptions);
+    const cloudinaryResult = await uploadFromBuffer(req);
 
-    if (!emailResult.success) {
-      return res.status(500).json({
-        success: false,
-        message: "Failed to submit application. Please try again later.",
-      });
-    }
+    // Save to MongoDB
+    const newCareer = await Career.create({
+      ...trimmedData,
+      resumeUrl: cloudinaryResult.secure_url,
+      resumePublicId: cloudinaryResult.public_id,
+    });
 
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
       message: "Application submitted successfully.",
     });
   } catch (error) {
-    console.error("Career submission error:", error.message);
+    console.error("Career submission error:", error);
     return res.status(500).json({
       success: false,
       message: "An error occurred. Please try again later.",
@@ -106,4 +101,4 @@ const submitCareer = async (req, res) => {
   }
 };
 
-module.exports = { submitCareer };
+module.exports = { submitCareer };

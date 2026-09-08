@@ -26,7 +26,7 @@ const AdminLogin = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (!username.trim() || !password) {
       toast.error('Please enter both username and password.');
@@ -34,17 +34,15 @@ const AdminLogin = () => {
     }
 
     setLoading(true);
-    setTimeout(() => {
-      const result = login(username, password);
-      setLoading(false);
+    const result = await login(username, password);
+    setLoading(false);
 
-      if (result.success) {
-        toast.success('Welcome back, System Administrator!');
-        navigate('/admin/dashboard', { replace: true });
-      } else {
-        toast.error(result.message || 'Invalid login credentials');
-      }
-    }, 600);
+    if (result.success) {
+      toast.success('Welcome back, System Administrator!');
+      navigate('/admin/dashboard', { replace: true });
+    } else {
+      toast.error(result.message || 'Invalid login credentials');
+    }
   };
 
   const handleFillDemo = () => {

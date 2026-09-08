@@ -68,7 +68,9 @@ const Contact = () => {
     }
     setIsLoading(true);
     try {
-      const API_BASE = import.meta.env.VITE_API_URL || '';
+      const API_BASE = (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
+        ? 'http://localhost:5000'
+        : (import.meta.env.VITE_API_URL || 'http://localhost:5000');
       const response = await fetch(`${API_BASE}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

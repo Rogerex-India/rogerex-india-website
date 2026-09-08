@@ -1,16 +1,23 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const AdminAuthContext = createContext();
 
 const ADMIN_STORAGE_KEY = 'rogerex_admin_session';
 
+export const getApiBase = () => {
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    return 'http://localhost:5000';
+  }
+  return import.meta.env.VITE_API_URL || 'http://localhost:5000';
+};
+
 export const AdminAuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+  const [token, setToken] = useState(() => {
     try {
       const saved = localStorage.getItem(ADMIN_STORAGE_KEY);
-      return saved ? JSON.parse(saved).isAuthenticated : false;
+      return saved ? JSON.parse(saved).token : null;
     } catch {
-      return false;
+      return null;
     }
   });
 
@@ -23,37 +30,76 @@ export const AdminAuthProvider = ({ children }) => {
     }
   });
 
-  const login = (username, password) => {
-    // Basic mock authentication check
-    if (
-      (username.trim().toLowerCase() === 'admin' && password === 'admin123') ||
-      (username.trim().length > 2 && password.length >= 4)
-    ) {
-      const user = {
-        name: 'System Administrator',
-        username: username.trim(),
-        role: 'Super Admin',
-        loginTime: new Date().toISOString(),
-      };
-      setIsAuthenticated(true);
-      setAdminUser(user);
-      localStorage.setItem(
-        ADMIN_STORAGE_KEY,
-        JSON.stringify({ isAuthenticated: true, adminUser: user })
-      );
-      return { success: true };
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    try {
+      const saved = localStorage.getItem(ADMIN_STORAGE_KEY);
+      return saved ? !!JSON.parse(saved).token : false;
+    } catch {
+      return false;
     }
-    return { success: false, message: 'Invalid username or password' };
+  });
+
+  const login = async (username, password) => {
+    try {
+      const API_BASE = getApiBase();
+      const response = await fetch(`${API_BASE}/api/admin/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setToken(data.token);
+        setAdminUser(data.admin);
+        setIsAuthenticated(true);
+
+        localStorage.setItem(
+          ADMIN_STORAGE_KEY,
+          JSON.stringify({
+            isAuthenticated: true,
+            token: data.token,
+            adminUser: data.admin,
+          })
+        );
+        return { success: true };
+      } else {
+        return { success: false, message: data.message || 'Invalid login credentials' };
+      }
+    } catch (error) {
+      console.error('Login request error:', error);
+      return { success: false, message: 'Server connection error. Please try again.' };
+    }
   };
 
   const logout = () => {
+    setToken(null);
     setIsAuthenticated(false);
     setAdminUser(null);
     localStorage.removeItem(ADMIN_STORAGE_KEY);
   };
 
+  const getAuthHeaders = () => {
+    return {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    };
+  };
+
   return (
-    <AdminAuthContext.Provider value={{ isAuthenticated, adminUser, login, logout }}>
+    <AdminAuthContext.Provider
+      value={{
+        isAuthenticated,
+        adminUser,
+        token,
+        login,
+        logout,
+        getAuthHeaders,
+      }}
+    >
       {children}
     </AdminAuthContext.Provider>
   );

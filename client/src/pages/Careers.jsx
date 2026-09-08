@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Users, GraduationCap, MapPin, Send, FileText, UploadCloud, ArrowRight, Heart } from 'lucide-react';
@@ -63,7 +63,23 @@ const Careers = () => {
   });
   const [resumeFile, setResumeFile] = useState(null);
   const [isLoading,  setIsLoading]  = useState(false);
+  const [isFormEnabled, setIsFormEnabled] = useState(true);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await fetch('/api/status');
+        const data = await response.json();
+        if (data.success) {
+          setIsFormEnabled(data.isCareerFormEnabled);
+        }
+      } catch (error) {
+        console.error("Failed to fetch form status");
+      }
+    };
+    fetchSettings();
+  }, []);
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -356,123 +372,143 @@ const Careers = () => {
         {/* ── Application Form ── */}
         <section id="apply" style={{ background: 'var(--bg-alt)', padding: '80px 32px', borderTop: '1px solid var(--border-color-subtle)' }} className="transition-colors duration-300">
           <div style={{ maxWidth: 720, margin: '0 auto' }}>
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={VP}
-              variants={fadeUp}
-              className="text-center mb-12"
-            >
-              <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{ padding: '6px 16px', background: 'var(--bg-pill)', border: '1px solid var(--border-color)' }}>
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#2563eb', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Ready to Join?</span>
-              </div>
-              <h2 style={{ fontSize: 'clamp(28px,4vw,40px)', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-main)', marginBottom: 12 }}>Submit Your Application</h2>
-              <p style={{ fontSize: 16, color: 'var(--text-muted)' }}>Fill out the form below and we'll review your application within 3-5 business days.</p>
-            </motion.div>
-
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={VP}
-              variants={popIn}
-              className="rounded-[24px]"
-              style={{ padding: '48px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 8px 32px var(--shadow-color)' }}
-            >
-              <form className="space-y-5" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div>
-                    <label style={labelStyle}>Full Name</label>
-                    <input name="name" value={formData.name} onChange={handleChange} style={inputStyle} placeholder="John Doe" type="text" />
-                  </div>
-                  <div>
-                    <label style={labelStyle}>Email Address</label>
-                    <input name="email" value={formData.email} onChange={handleChange} style={inputStyle} placeholder="john@example.com" type="email" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div>
-                    <label style={labelStyle}>Phone Number</label>
-                    <input name="phone" value={formData.phone} onChange={handleChange} style={inputStyle} placeholder="+91 98765 43210" type="tel" />
-                  </div>
-                  <div>
-                    <label style={labelStyle}>College / University</label>
-                    <input name="college" value={formData.college} onChange={handleChange} style={inputStyle} placeholder="ABC College, Bangalore" type="text" />
-                  </div>
-                </div>
-                <div>
-                  <label style={labelStyle}>Applying for Role</label>
-                  <select
-                    name="role" value={formData.role} onChange={handleChange}
-                    style={{ ...inputStyle, appearance: 'none', cursor: 'pointer' }}
-                  >
-                    <option value="">Select a role...</option>
-                    <option value="Frontend Developer">Frontend Developer</option>
-                    <option value="UI Designer">UI Designer</option>
-                    <option value="Backend Engineer">Backend Engineer</option>
-                    <option value="Intern">Intern</option>
-                  </select>
-                </div>
-                {/* Resume Upload */}
-                <div>
-                  <label style={labelStyle}>Resume / CV</label>
-                  <input
-                    ref={fileInputRef}
-                    id="resume-upload"
-                    type="file"
-                    name="resume"
-                    accept=".pdf,.doc,.docx"
-                    className="hidden"
-                    onChange={handleFileChange}
-                  />
-                  <div
-                    onClick={() => fileInputRef.current?.click()}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 14, height: 60,
-                      padding: '0 20px', borderRadius: 12, cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      background: resumeFile ? 'rgba(37,99,235,0.08)' : 'var(--bg-input)',
-                      border: resumeFile ? '1px solid #2563eb' : '2px dashed var(--border-color)',
-                    }}
-                  >
-                    {resumeFile
-                      ? <FileText className="w-5 h-5 shrink-0" style={{ color: '#2563eb' }} />
-                      : <UploadCloud className="w-5 h-5 shrink-0" style={{ color: 'var(--text-muted)' }} />
-                    }
-                    <span style={{ fontSize: 14, color: resumeFile ? '#2563eb' : 'var(--text-muted)', fontWeight: resumeFile ? 600 : 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {resumeFile ? resumeFile.name : 'Click to upload PDF, DOC or DOCX (max 10MB)'}
-                    </span>
-                  </div>
-                </div>
-                {/* Cover Letter */}
-                <div>
-                  <label style={labelStyle}>Cover Letter / Why Us?</label>
-                  <textarea
-                    name="coverLetter" value={formData.coverLetter} onChange={handleChange}
-                    rows={5} placeholder="Tell us about yourself and why you want to join Rogerex..."
-                    style={{
-                      ...inputStyle, height: 'auto', padding: '16px 20px',
-                      resize: 'none', lineHeight: 1.65,
-                    }}
-                  />
-                </div>
-
-                <motion.button
-                  whileTap={{ scale: 0.97 }}
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-300 cursor-pointer"
-                  style={{
-                    padding: '16px', fontSize: 15,
-                    background: isLoading ? 'rgba(37,99,235,0.5)' : '#2563eb',
-                    color: '#eeefff', cursor: isLoading ? 'not-allowed' : 'pointer',
-                    boxShadow: isLoading ? 'none' : '0 0 24px rgba(37,99,235,0.35)',
-                  }}
+            {isFormEnabled ? (
+              <>
+                <motion.div
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={VP}
+                  variants={fadeUp}
+                  className="text-center mb-12"
                 >
-                  {isLoading ? 'Submitting...' : 'Submit Application'}
-                  {!isLoading && <Send className="w-4 h-4" />}
-                </motion.button>
-              </form>
-            </motion.div>
+                  <div className="inline-flex items-center gap-2 rounded-full mb-5" style={{ padding: '6px 16px', background: 'var(--bg-pill)', border: '1px solid var(--border-color)' }}>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: '#2563eb', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Ready to Join?</span>
+                  </div>
+                  <h2 style={{ fontSize: 'clamp(28px,4vw,40px)', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-main)', marginBottom: 12 }}>Submit Your Application</h2>
+                  <p style={{ fontSize: 16, color: 'var(--text-muted)' }}>Fill out the form below and we'll review your application within 3-5 business days.</p>
+                </motion.div>
+
+                <motion.div
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={VP}
+                  variants={popIn}
+                  className="rounded-[24px]"
+                  style={{ padding: '48px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 8px 32px var(--shadow-color)' }}
+                >
+                  <form className="space-y-5" onSubmit={handleSubmit}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <div>
+                        <label style={labelStyle}>Full Name</label>
+                        <input name="name" value={formData.name} onChange={handleChange} style={inputStyle} placeholder="John Doe" type="text" />
+                      </div>
+                      <div>
+                        <label style={labelStyle}>Email Address</label>
+                        <input name="email" value={formData.email} onChange={handleChange} style={inputStyle} placeholder="john@example.com" type="email" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <div>
+                        <label style={labelStyle}>Phone Number</label>
+                        <input name="phone" value={formData.phone} onChange={handleChange} style={inputStyle} placeholder="+91 98765 43210" type="tel" />
+                      </div>
+                      <div>
+                        <label style={labelStyle}>College / University</label>
+                        <input name="college" value={formData.college} onChange={handleChange} style={inputStyle} placeholder="ABC College, Bangalore" type="text" />
+                      </div>
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Applying for Role</label>
+                      <select
+                        name="role" value={formData.role} onChange={handleChange}
+                        style={{ ...inputStyle, appearance: 'none', cursor: 'pointer' }}
+                      >
+                        <option value="">Select a role...</option>
+                        <option value="Frontend Developer">Frontend Developer</option>
+                        <option value="UI Designer">UI Designer</option>
+                        <option value="Backend Engineer">Backend Engineer</option>
+                        <option value="Intern">Intern</option>
+                      </select>
+                    </div>
+                    {/* Resume Upload */}
+                    <div>
+                      <label style={labelStyle}>Resume / CV</label>
+                      <input
+                        ref={fileInputRef}
+                        id="resume-upload"
+                        type="file"
+                        name="resume"
+                        accept=".pdf,.doc,.docx"
+                        className="hidden"
+                        onChange={handleFileChange}
+                      />
+                      <div
+                        onClick={() => fileInputRef.current?.click()}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 14, height: 60,
+                          padding: '0 20px', borderRadius: 12, cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          background: resumeFile ? 'rgba(37,99,235,0.08)' : 'var(--bg-input)',
+                          border: resumeFile ? '1px solid #2563eb' : '2px dashed var(--border-color)',
+                        }}
+                      >
+                        {resumeFile
+                          ? <FileText className="w-5 h-5 shrink-0" style={{ color: '#2563eb' }} />
+                          : <UploadCloud className="w-5 h-5 shrink-0" style={{ color: 'var(--text-muted)' }} />
+                        }
+                        <span style={{ fontSize: 14, color: resumeFile ? '#2563eb' : 'var(--text-muted)', fontWeight: resumeFile ? 600 : 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {resumeFile ? resumeFile.name : 'Click to upload PDF, DOC or DOCX (max 10MB)'}
+                        </span>
+                      </div>
+                    </div>
+                    {/* Cover Letter */}
+                    <div>
+                      <label style={labelStyle}>Cover Letter / Why Us?</label>
+                      <textarea
+                        name="coverLetter" value={formData.coverLetter} onChange={handleChange}
+                        rows={5} placeholder="Tell us about yourself and why you want to join Rogerex..."
+                        style={{
+                          ...inputStyle, height: 'auto', padding: '16px 20px',
+                          resize: 'none', lineHeight: 1.65,
+                        }}
+                      />
+                    </div>
+
+                    <motion.button
+                      whileTap={{ scale: 0.97 }}
+                      type="submit"
+                      disabled={isLoading}
+                      className="w-full flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-300 cursor-pointer"
+                      style={{
+                        padding: '16px', fontSize: 15,
+                        background: isLoading ? 'rgba(37,99,235,0.5)' : '#2563eb',
+                        color: '#eeefff', cursor: isLoading ? 'not-allowed' : 'pointer',
+                        boxShadow: isLoading ? 'none' : '0 0 24px rgba(37,99,235,0.35)',
+                      }}
+                    >
+                      {isLoading ? 'Submitting...' : 'Submit Application'}
+                      {!isLoading && <Send className="w-4 h-4" />}
+                    </motion.button>
+                  </form>
+                </motion.div>
+              </>
+            ) : (
+              <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={VP}
+                variants={fadeUp}
+                className="text-center"
+              >
+                <div style={{ padding: '48px', background: 'var(--bg-card)', borderRadius: 24, border: '1px solid var(--border-color)' }}>
+                  <div style={{ width: 64, height: 64, margin: '0 auto 20px', background: 'rgba(37,99,235,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Heart className="w-8 h-8" style={{ color: '#2563eb' }} />
+                  </div>
+                  <h3 style={{ fontSize: 24, fontWeight: 600, color: 'var(--text-main)', marginBottom: 12 }}>No Openings Currently</h3>
+                  <p style={{ fontSize: 16, color: 'var(--text-muted)' }}>We are currently fully staffed and not accepting new applications. Please check back later or subscribe to our newsletter for updates on future openings.</p>
+                </div>
+              </motion.div>
+            )}
           </div>
         </section>
 
