@@ -1,14 +1,15 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
+import { AdminAuthProvider } from './context/AdminAuthContext';
 import ScrollToTop from './components/ScrollToTop';
 
 // Layout components
 import Header from './components/Header';
 import Footer from './components/Footer';
 
-// Pages
+// Public Pages
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
@@ -16,8 +17,15 @@ import Portfolio from './pages/Portfolio';
 import Careers from './pages/Careers';
 import Contact from './pages/Contact';
 
+// Admin Pages & Guard
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import ProtectedRoute from './components/admin/ProtectedRoute';
+
 function AppContent() {
   const { theme } = useTheme();
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
 
   return (
     <div
@@ -42,18 +50,31 @@ function AppContent() {
           },
         }}
       />
-      <Header />
+      {!isAdminRoute && <Header />}
       <main className="flex-grow">
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/contact" element={<Contact />} />
+
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
         </Routes>
       </main>
-      <Footer />
+      {!isAdminRoute && <Footer />}
     </div>
   );
 }
@@ -61,12 +82,15 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        <ScrollToTop />
-        <AppContent />
-      </BrowserRouter>
+      <AdminAuthProvider>
+        <BrowserRouter>
+          <ScrollToTop />
+          <AppContent />
+        </BrowserRouter>
+      </AdminAuthProvider>
     </ThemeProvider>
   );
 }
 
 export default App;
+

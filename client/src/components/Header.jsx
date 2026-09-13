@@ -102,8 +102,23 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* Actions: Theme Toggle + CTA + Mobile Toggle */}
+          {/* Actions: Admin Link + Theme Toggle + CTA + Mobile Toggle */}
           <div className="flex items-center gap-3">
+            {/* Admin Portal Button */}
+            <Link
+              to="/admin/login"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold transition-all duration-200"
+              style={{
+                background: 'rgba(37,99,235,0.1)',
+                border: '1px solid rgba(37,99,235,0.3)',
+                color: '#2563eb',
+              }}
+              title="Admin Portal"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
+              Admin
+            </Link>
+
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
@@ -202,6 +217,18 @@ const Header = () => {
                 {label}
               </Link>
             ))}
+            <Link
+              to="/admin/login"
+              className="rounded-xl px-4 py-3 font-semibold transition-all duration-200 flex items-center justify-between"
+              style={{
+                fontSize: 15,
+                color: '#2563eb',
+                background: 'rgba(37,99,235,0.08)',
+              }}
+            >
+              <span>Admin Portal</span>
+              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+            </Link>
             <Link
               to="/contact"
               className="mt-2 rounded-xl px-4 py-3 text-center font-semibold transition-all duration-300"
