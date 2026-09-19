@@ -51,10 +51,10 @@ const benefits = [
 ];
 
 const openings = [
-  { title: 'Frontend Developer',  type: 'Full-time',   location: 'Remote / India', comp: 'Competitive' },
-  { title: 'UI Designer',         type: 'Full-time',   location: 'Remote',         comp: 'Performance Based' },
-  { title: 'Backend Engineer',    type: 'Full-time',   location: 'Hub (Gurgaon)',  comp: 'High-Growth' },
-  { title: 'Intern',              type: '6 Months',    location: 'Remote',         comp: 'PPO Potential' },
+  { title: 'Frontend Developer', type: 'Full-time', location: 'Remote / India', comp: 'Competitive' },
+  { title: 'UI Designer', type: 'Full-time', location: 'Remote', comp: 'Performance Based' },
+  { title: 'Backend Engineer', type: 'Full-time', location: 'Hub (Gurgaon)', comp: 'High-Growth' },
+  { title: 'Intern', type: '6 Months', location: 'Remote', comp: 'PPO Potential' },
 ];
 
 const Careers = () => {
@@ -62,8 +62,11 @@ const Careers = () => {
     name: '', email: '', phone: '', college: '', role: '', coverLetter: '',
   });
   const [resumeFile, setResumeFile] = useState(null);
-  const [isLoading,  setIsLoading]  = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isFormEnabled, setIsFormEnabled] = useState(true);
+  const [fieldErrors, setFieldErrors] = useState({
+    name: '', email: '', phone: '', college: '', role: '', coverLetter: '',
+  });
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -81,27 +84,55 @@ const Careers = () => {
     fetchSettings();
   }, []);
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (fieldErrors[e.target.name]) {
+      setFieldErrors({ ...fieldErrors, [e.target.name]: '' });
+    }
+  };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const allowed = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-    if (!allowed.includes(file.type)) { toast.error('Only PDF, DOC, or DOCX files are allowed.'); return; }
-    if (file.size > 10 * 1024 * 1024) { toast.error('File size must be under 10MB.'); return; }
-    setResumeFile(file);
+  // const handleFileChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
+  //   const allowed = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/jpg', 'image/png'];
+  //   if (!allowed.includes(file.type)) { toast.error('Only PDF, DOC, DOCX, JPG, or PNG files are allowed.'); return; }
+  //   if (file.size > 10 * 1024 * 1024) { toast.error('File size must be under 10MB.'); return; }
+  //   setResumeFile(file);
+  //   if (fieldErrors.resume) setFieldErrors({ ...fieldErrors, resume: '' });
+  // };
+
+  const validate = () => {
+    const errors = {};
+    if (!formData.name.trim()) errors.name = 'Full name is required.';
+    if (!formData.email.trim()) {
+      errors.email = 'Email address is required.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      errors.email = 'Please enter a valid email address.';
+    }
+    if (!formData.phone.trim()) errors.phone = 'Phone number is required.';
+    if (!formData.college.trim()) errors.college = 'College / University is required.';
+    if (!formData.role) errors.role = 'Please select a role.';
+    if (!formData.coverLetter.trim()) errors.coverLetter = 'Cover letter is required.';
+    // if (!resumeFile) errors.resume = 'Please upload your resume.';
+    return errors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.phone || !formData.college || !formData.role || !formData.coverLetter) {
-      toast.error('All fields are required!'); return;
+    const errors = validate();
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      const firstErrorKey = Object.keys(errors)[0];
+      const el = firstErrorKey === 'resume'
+        ? document.getElementById('resume-upload-area')
+        : document.querySelector(`[name="${firstErrorKey}"]`);
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
     }
-    if (!resumeFile) { toast.error('Please upload your resume.'); return; }
 
     const payload = new FormData();
     Object.entries(formData).forEach(([key, val]) => payload.append(key, val));
-    payload.append('resume', resumeFile);
+    // payload.append('resume', resumeFile); // disabled — file upload commented out
 
     setIsLoading(true);
     try {
@@ -111,6 +142,7 @@ const Careers = () => {
         toast.success('Application submitted! We will review and get back to you.');
         setFormData({ name: '', email: '', phone: '', college: '', role: '', coverLetter: '' });
         setResumeFile(null);
+        setFieldErrors({ name: '', email: '', phone: '', college: '', role: '', coverLetter: '' });
         if (fileInputRef.current) fileInputRef.current.value = '';
       } else {
         toast.error(data.message || 'Something went wrong. Please try again.');
@@ -123,16 +155,18 @@ const Careers = () => {
   };
 
   /* ── Theme-aware input style ── */
-  const inputStyle = {
+  const getInputStyle = (fieldName) => ({
     width: '100%', height: 52, padding: '0 20px', borderRadius: 12,
-    background: 'var(--bg-input)', border: '1px solid var(--border-color)',
+    background: 'var(--bg-input)',
+    border: fieldErrors[fieldName] ? '1.5px solid #ef4444' : '1px solid var(--border-color)',
     color: 'var(--text-main)', fontSize: 15, outline: 'none',
     fontFamily: 'Inter, sans-serif', transition: 'border-color 0.2s, background-color 0.3s',
-  };
+  });
   const labelStyle = {
     fontSize: 11, fontWeight: 600, color: 'var(--text-muted)',
     letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6, display: 'block',
   };
+  const errorStyle = { fontSize: 12, color: '#ef4444', marginTop: 5 };
 
   return (
     <>
@@ -353,15 +387,15 @@ const Careers = () => {
                     </div>
                   </div>
                   <motion.div whileTap={{ scale: 0.96 }} className="w-full md:w-auto text-center">
-                    <Link
-                      to="/contact"
+                    <a
+                      href="#apply"
                       className="w-full md:w-auto text-center rounded-xl font-semibold transition-all duration-200"
                       style={{ padding: '12px 28px', fontSize: 14, background: '#2563eb', color: '#eeefff', display: 'inline-block' }}
                       onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 0 24px rgba(37,99,235,0.4)'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none'; }}
                     >
                       Apply Now
-                    </Link>
+                    </a>
                   </motion.div>
                 </motion.div>
               ))}
@@ -396,32 +430,36 @@ const Careers = () => {
                   className="rounded-[24px]"
                   style={{ padding: '48px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 8px 32px var(--shadow-color)' }}
                 >
-                  <form className="space-y-5" onSubmit={handleSubmit}>
+                  <form className="space-y-5" onSubmit={handleSubmit} noValidate>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div>
                         <label style={labelStyle}>Full Name</label>
-                        <input name="name" value={formData.name} onChange={handleChange} style={inputStyle} placeholder="John Doe" type="text" />
+                        <input name="name" value={formData.name} onChange={handleChange} style={getInputStyle('name')} placeholder="John Doe" type="text" />
+                        {fieldErrors.name && <p style={errorStyle}>{fieldErrors.name}</p>}
                       </div>
                       <div>
                         <label style={labelStyle}>Email Address</label>
-                        <input name="email" value={formData.email} onChange={handleChange} style={inputStyle} placeholder="john@example.com" type="email" />
+                        <input name="email" value={formData.email} onChange={handleChange} style={getInputStyle('email')} placeholder="john@example.com" type="text" />
+                        {fieldErrors.email && <p style={errorStyle}>{fieldErrors.email}</p>}
                       </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div>
                         <label style={labelStyle}>Phone Number</label>
-                        <input name="phone" value={formData.phone} onChange={handleChange} style={inputStyle} placeholder="+91 98765 43210" type="tel" />
+                        <input name="phone" value={formData.phone} onChange={handleChange} style={getInputStyle('phone')} placeholder="+91 98765 43210" type="tel" />
+                        {fieldErrors.phone && <p style={errorStyle}>{fieldErrors.phone}</p>}
                       </div>
                       <div>
                         <label style={labelStyle}>College / University</label>
-                        <input name="college" value={formData.college} onChange={handleChange} style={inputStyle} placeholder="ABC College, Bangalore" type="text" />
+                        <input name="college" value={formData.college} onChange={handleChange} style={getInputStyle('college')} placeholder="ABC College, Bangalore" type="text" />
+                        {fieldErrors.college && <p style={errorStyle}>{fieldErrors.college}</p>}
                       </div>
                     </div>
                     <div>
                       <label style={labelStyle}>Applying for Role</label>
                       <select
                         name="role" value={formData.role} onChange={handleChange}
-                        style={{ ...inputStyle, appearance: 'none', cursor: 'pointer' }}
+                        style={{ ...getInputStyle('role'), appearance: 'none', cursor: 'pointer' }}
                       >
                         <option value="">Select a role...</option>
                         <option value="Frontend Developer">Frontend Developer</option>
@@ -429,38 +467,43 @@ const Careers = () => {
                         <option value="Backend Engineer">Backend Engineer</option>
                         <option value="Intern">Intern</option>
                       </select>
+                      {fieldErrors.role && <p style={errorStyle}>{fieldErrors.role}</p>}
                     </div>
-                    {/* Resume Upload */}
-                    <div>
-                      <label style={labelStyle}>Resume / CV</label>
-                      <input
-                        ref={fileInputRef}
-                        id="resume-upload"
-                        type="file"
-                        name="resume"
-                        accept=".pdf,.doc,.docx"
-                        className="hidden"
-                        onChange={handleFileChange}
-                      />
-                      <div
-                        onClick={() => fileInputRef.current?.click()}
-                        style={{
-                          display: 'flex', alignItems: 'center', gap: 14, height: 60,
-                          padding: '0 20px', borderRadius: 12, cursor: 'pointer',
-                          transition: 'all 0.2s',
-                          background: resumeFile ? 'rgba(37,99,235,0.08)' : 'var(--bg-input)',
-                          border: resumeFile ? '1px solid #2563eb' : '2px dashed var(--border-color)',
-                        }}
-                      >
-                        {resumeFile
-                          ? <FileText className="w-5 h-5 shrink-0" style={{ color: '#2563eb' }} />
-                          : <UploadCloud className="w-5 h-5 shrink-0" style={{ color: 'var(--text-muted)' }} />
-                        }
-                        <span style={{ fontSize: 14, color: resumeFile ? '#2563eb' : 'var(--text-muted)', fontWeight: resumeFile ? 600 : 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {resumeFile ? resumeFile.name : 'Click to upload PDF, DOC or DOCX (max 10MB)'}
-                        </span>
-                      </div>
-                    </div>
+                    {/* Resume Upload — temporarily disabled */}
+                    {/* <div>
+                       <label style={labelStyle}>Resume / CV</label>
+                       <input
+                         ref={fileInputRef}
+                         id="resume-upload"
+                         type="file"
+                         name="resume"
+                         accept=".pdf,.doc,.docx,.png,.jpg"
+                         className="hidden"
+                         onChange={handleFileChange}
+                       />
+                       <div
+                         id="resume-upload-area"
+                         onClick={() => fileInputRef.current?.click()}
+                         style={{
+                           display: 'flex', alignItems: 'center', gap: 14, height: 60,
+                           padding: '0 20px', borderRadius: 12, cursor: 'pointer',
+                           transition: 'all 0.2s',
+                           background: resumeFile ? 'rgba(37,99,235,0.08)' : 'var(--bg-input)',
+                           border: fieldErrors.resume
+                             ? '1.5px solid #ef4444'
+                             : resumeFile ? '1px solid #2563eb' : '2px dashed var(--border-color)',
+                         }}
+                       >
+                         {resumeFile
+                           ? <FileText className="w-5 h-5 shrink-0" style={{ color: '#2563eb' }} />
+                           : <UploadCloud className="w-5 h-5 shrink-0" style={{ color: fieldErrors.resume ? '#ef4444' : 'var(--text-muted)' }} />
+                         }
+                         <span style={{ fontSize: 14, color: resumeFile ? '#2563eb' : fieldErrors.resume ? '#ef4444' : 'var(--text-muted)', fontWeight: resumeFile ? 600 : 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                           {resumeFile ? resumeFile.name : 'Click to upload PDF, DOC, DOCX, JPG or PNG (max 10MB)'}
+                         </span>
+                       </div>
+                       {fieldErrors.resume && <p style={errorStyle}>{fieldErrors.resume}</p>}
+                     </div> */}
                     {/* Cover Letter */}
                     <div>
                       <label style={labelStyle}>Cover Letter / Why Us?</label>
@@ -468,10 +511,11 @@ const Careers = () => {
                         name="coverLetter" value={formData.coverLetter} onChange={handleChange}
                         rows={5} placeholder="Tell us about yourself and why you want to join Rogerex..."
                         style={{
-                          ...inputStyle, height: 'auto', padding: '16px 20px',
+                          ...getInputStyle('coverLetter'), height: 'auto', padding: '16px 20px',
                           resize: 'none', lineHeight: 1.65,
                         }}
                       />
+                      {fieldErrors.coverLetter && <p style={errorStyle}>{fieldErrors.coverLetter}</p>}
                     </div>
 
                     <motion.button
