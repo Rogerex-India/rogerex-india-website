@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { useAdminAuth, getApiBase } from '../../../context/AdminAuthContext';
 import CareerTable from './CareerTable';
 import CareerDetailModal from './CareerDetailModal';
+import DeleteConfirmModal from './DeleteConfirmModal';
 
 const CareersView = () => {
   const { getAuthHeaders } = useAdminAuth();
@@ -10,6 +11,7 @@ const CareersView = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCareer, setSelectedCareer] = useState(null);
   const [activeNote, setActiveNote] = useState('');
+  const [deleteConfirm, setDeleteConfirm] = useState(null); // { id, name } | null
 
   const fetchCareers = useCallback(async () => {
     try {
@@ -91,8 +93,15 @@ const CareersView = () => {
     }
   };
 
-  const handleDelete = async (id, name) => {
-    if (!window.confirm(`Are you sure you want to delete application from "${name}"?`)) return;
+  // Delete — opens custom confirm modal
+  const handleDelete = (id, name) => {
+    setDeleteConfirm({ id, name });
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteConfirm) return;
+    const { id } = deleteConfirm;
+    setDeleteConfirm(null);
     try {
       const API_BASE = getApiBase();
       const response = await fetch(`${API_BASE}/api/admin/careers/${id}`, {
@@ -145,6 +154,15 @@ const CareersView = () => {
         onSaveNote={handleSaveNote}
         onStatusChange={handleStatusChange}
         onDelete={handleDelete}
+      />
+
+      {/* Delete Confirm Modal */}
+      <DeleteConfirmModal
+        isOpen={!!deleteConfirm}
+        name={deleteConfirm?.name || ''}
+        itemType="application"
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteConfirm(null)}
       />
     </div>
   );

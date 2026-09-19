@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
-import logo from '../assets/icons2.png';
+import icons1 from '../assets/icons1.png';
+import icons2 from '../assets/icons2.png';
 
 const navLinks = [
   { label: 'Home',      path: '/' },
@@ -31,6 +32,9 @@ const Header = () => {
 
   const isActive = (path) => currentPath === path;
 
+  // icons1 = dark mode logo, icons2 = light mode logo
+  const logoSrc = theme === 'dark' ? icons1 : icons2;
+
   return (
     <>
       <nav
@@ -51,9 +55,10 @@ const Header = () => {
           {/* Logo & Brand */}
           <Link to="/" className="flex items-center gap-3 group shrink-0">
             <img
+              key={theme}
               alt="Rogerex India Logo"
-              className="h-8 w-auto object-contain"
-              src={logo}
+              src={logoSrc}
+              className="h-9 w-9 object-contain shrink-0"
             />
             <div className="flex flex-col">
               <span

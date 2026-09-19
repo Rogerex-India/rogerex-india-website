@@ -1,7 +1,6 @@
 const Career = require("../models/Career");
 const cloudinary = require("../config/cloudinary");
 const { isValidEmail, isValidPhone, isFieldEmpty } = require("../middleware/validation");
-const streamifier = require("streamifier");
 
 const submitCareer = async (req, res) => {
   try {
@@ -38,13 +37,13 @@ const submitCareer = async (req, res) => {
       });
     }
 
-    // Validate resume file
-    if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        message: "Resume file is required. Please upload a PDF or Word document.",
-      });
-    }
+    // // Validate resume file (disabled — file upload temporarily commented out)
+    // if (!req.file) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Resume file is required. Please upload a PDF or Word document.",
+    //   });
+    // }
 
     // Trim strings for safety
     const trimmedData = {
@@ -56,36 +55,37 @@ const submitCareer = async (req, res) => {
       coverLetter: coverLetter.trim(),
     };
 
-    // Upload to Cloudinary using streamifier
-    const uploadFromBuffer = (req) => {
-      return new Promise((resolve, reject) => {
-        const cld_upload_stream = cloudinary.uploader.upload_stream(
-          {
-            folder: "careers",
-            resource_type: "auto", // Let Cloudinary auto-detect (fixes 403 for PDFs on some accounts)
-            use_filename: true,
-            unique_filename: true,
-          },
-          (error, result) => {
-            if (result) {
-              resolve(result);
-            } else {
-              reject(error);
-            }
-          }
-        );
+    // // Upload to Cloudinary using Base64 Data URI (temporarily disabled)
+    // let cloudinaryResult;
+    // try {
+    //   const b64 = Buffer.from(req.file.buffer).toString("base64");
+    //   const dataURI = `data:${req.file.mimetype};base64,${b64}`;
+    //
+    //   cloudinaryResult = await cloudinary.uploader.upload(dataURI, {
+    //     folder: "careers",
+    //     resource_type: "auto",
+    //     use_filename: true,
+    //     unique_filename: true,
+    //   });
+    // } catch (cloudinaryError) {
+    //   console.error("Cloudinary FULL ERROR:", {
+    //     message: cloudinaryError?.message,
+    //     http_code: cloudinaryError?.http_code,
+    //     name: cloudinaryError?.name,
+    //     error: cloudinaryError,
+    //   });
+    //
+    //   return res.status(500).json({
+    //     success: false,
+    //     message: "Failed to upload resume.",
+    //   });
+    // }
 
-        streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
-      });
-    };
-
-    const cloudinaryResult = await uploadFromBuffer(req);
-
-    // Save to MongoDB
-    const newCareer = await Career.create({
+    // Save to MongoDB (without resume URL for now)
+    await Career.create({
       ...trimmedData,
-      resumeUrl: cloudinaryResult.secure_url,
-      resumePublicId: cloudinaryResult.public_id,
+      resumeUrl: null,
+      resumePublicId: null,
     });
 
     return res.status(201).json({
