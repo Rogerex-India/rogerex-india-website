@@ -35,11 +35,11 @@ const careerSchema = new mongoose.Schema(
     },
     resumeUrl: {
       type: String,
-      required: [true, "Resume URL is required"],
+      default: null,
     },
     resumePublicId: {
       type: String,
-      required: [true, "Resume Public ID is required for deletion"],
+      default: null,
     },
     status: {
       type: String,

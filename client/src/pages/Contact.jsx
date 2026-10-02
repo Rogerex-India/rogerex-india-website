@@ -58,13 +58,39 @@ const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear error for this field as user types
+    if (fieldErrors[e.target.name]) {
+      setFieldErrors({ ...fieldErrors, [e.target.name]: '' });
+    }
+  };
+
+  const validate = () => {
+    const errors = {};
+    if (!formData.name.trim()) errors.name = 'Full name is required.';
+    if (!formData.email.trim()) {
+      errors.email = 'Email address is required.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      errors.email = 'Please enter a valid email address.';
+    }
+    if (!formData.phone.trim()) errors.phone = 'Phone number is required.';
+    if (!formData.subject.trim()) errors.subject = 'Subject is required.';
+    if (!formData.message.trim()) errors.message = 'Message is required.';
+    return errors;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.phone || !formData.subject || !formData.message) {
-      toast.error('All fields are required!'); return;
+    const errors = validate();
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      // Scroll to first error field
+      const firstErrorKey = Object.keys(errors)[0];
+      document.querySelector(`[name="${firstErrorKey}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
     }
     setIsLoading(true);
     try {
@@ -80,6 +106,7 @@ const Contact = () => {
       if (data.success) {
         toast.success('Message sent successfully! We will get back to you soon.');
         setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+        setFieldErrors({ name: '', email: '', phone: '', subject: '', message: '' });
       } else {
         toast.error(data.message || 'Something went wrong. Please try again.');
       }
@@ -91,16 +118,18 @@ const Contact = () => {
   };
 
   /* ── Theme-aware input style ── */
-  const inputStyle = {
+  const getInputStyle = (fieldName) => ({
     width: '100%', height: 52, padding: '0 20px', borderRadius: 12,
-    background: 'var(--bg-input)', border: '1px solid var(--border-color)',
+    background: 'var(--bg-input)',
+    border: fieldErrors[fieldName] ? '1.5px solid #ef4444' : '1px solid var(--border-color)',
     color: 'var(--text-main)', fontSize: 15, outline: 'none',
     fontFamily: 'Inter, sans-serif', transition: 'border-color 0.2s, background-color 0.3s',
-  };
+  });
   const labelStyle = {
     fontSize: 11, fontWeight: 600, color: 'var(--text-muted)',
     letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6, display: 'block',
   };
+  const errorStyle = { fontSize: 12, color: '#ef4444', marginTop: 5 };
 
   return (
     <>
@@ -159,46 +188,37 @@ const Contact = () => {
               style={{ padding: '48px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 8px 32px var(--shadow-color)' }}
             >
               <h2 style={{ fontSize: 22, fontWeight: 600, color: 'var(--text-main)', marginBottom: 32, letterSpacing: '-0.01em' }}>Send us a Message</h2>
-              <form className="space-y-5" onSubmit={handleSubmit}>
+              <form className="space-y-5" onSubmit={handleSubmit} noValidate>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
                     <label style={labelStyle}>Full Name</label>
-                    <input name="name" value={formData.name} onChange={handleChange} style={inputStyle} placeholder="John Doe" type="text"
-                      onFocus={(e) => { e.target.style.borderColor = '#2563eb'; }}
-                      onBlur={(e) => { e.target.style.borderColor = 'var(--border-color)'; }}
-                    />
+                    <input name="name" value={formData.name} onChange={handleChange} style={getInputStyle('name')} placeholder="John Doe" type="text" />
+                    {fieldErrors.name && <p style={errorStyle}>{fieldErrors.name}</p>}
                   </div>
                   <div>
                     <label style={labelStyle}>Email Address</label>
-                    <input name="email" value={formData.email} onChange={handleChange} style={inputStyle} placeholder="john@example.com" type="email"
-                      onFocus={(e) => { e.target.style.borderColor = '#2563eb'; }}
-                      onBlur={(e) => { e.target.style.borderColor = 'var(--border-color)'; }}
-                    />
+                    <input name="email" value={formData.email} onChange={handleChange} style={getInputStyle('email')} placeholder="john@example.com" type="text" />
+                    {fieldErrors.email && <p style={errorStyle}>{fieldErrors.email}</p>}
                   </div>
                 </div>
                 <div>
                   <label style={labelStyle}>Phone Number</label>
-                  <input name="phone" value={formData.phone} onChange={handleChange} style={inputStyle} placeholder="+91 98765 43210" type="tel"
-                    onFocus={(e) => { e.target.style.borderColor = '#2563eb'; }}
-                    onBlur={(e) => { e.target.style.borderColor = 'var(--border-color)'; }}
-                  />
+                  <input name="phone" value={formData.phone} onChange={handleChange} style={getInputStyle('phone')} placeholder="+91 98765 43210" type="tel" />
+                  {fieldErrors.phone && <p style={errorStyle}>{fieldErrors.phone}</p>}
                 </div>
                 <div>
                   <label style={labelStyle}>Subject</label>
-                  <input name="subject" value={formData.subject} onChange={handleChange} style={inputStyle} placeholder="Inquiry about custom development" type="text"
-                    onFocus={(e) => { e.target.style.borderColor = '#2563eb'; }}
-                    onBlur={(e) => { e.target.style.borderColor = 'var(--border-color)'; }}
-                  />
+                  <input name="subject" value={formData.subject} onChange={handleChange} style={getInputStyle('subject')} placeholder="Inquiry about custom development" type="text" />
+                  {fieldErrors.subject && <p style={errorStyle}>{fieldErrors.subject}</p>}
                 </div>
                 <div>
                   <label style={labelStyle}>Your Message</label>
                   <textarea
                     name="message" value={formData.message} onChange={handleChange}
                     rows={5} placeholder="Tell us about your project or inquiry..."
-                    style={{ ...inputStyle, height: 'auto', padding: '16px 20px', resize: 'none', lineHeight: 1.65 }}
-                    onFocus={(e) => { e.target.style.borderColor = '#2563eb'; }}
-                    onBlur={(e) => { e.target.style.borderColor = 'var(--border-color)'; }}
+                    style={{ ...getInputStyle('message'), height: 'auto', padding: '16px 20px', resize: 'none', lineHeight: 1.65 }}
                   />
+                  {fieldErrors.message && <p style={errorStyle}>{fieldErrors.message}</p>}
                 </div>
                 <motion.button
                   whileTap={{ scale: 0.97 }}

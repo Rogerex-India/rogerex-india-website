@@ -1,6 +1,6 @@
+require("dotenv").config(); // MUST be first — loads all env vars before any module uses them
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
 const connectDB = require("./config/db");
 const { seedDefaultAdmin } = require("./controllers/adminController");
 

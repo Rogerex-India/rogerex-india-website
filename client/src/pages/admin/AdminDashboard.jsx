@@ -13,6 +13,7 @@ import ContactDetailModal from './components/ContactDetailModal';
 import ChangePasswordModal from './components/ChangePasswordModal';
 import CareersView from './components/CareersView';
 import SettingsView from './components/SettingsView';
+import DeleteConfirmModal from './components/DeleteConfirmModal';
 
 const AdminDashboard = () => {
   const { adminUser, logout, getAuthHeaders } = useAdminAuth();
@@ -27,6 +28,7 @@ const AdminDashboard = () => {
   const [activeNote, setActiveNote] = useState('');
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [currentView, setCurrentView] = useState('contacts'); // 'contacts', 'careers', 'settings'
+  const [deleteConfirm, setDeleteConfirm] = useState(null); // { id, name } | null
 
   // Fetch all contact submissions from backend API
   const fetchContacts = useCallback(async () => {
@@ -136,9 +138,15 @@ const AdminDashboard = () => {
     }
   };
 
-  // Delete request
-  const handleDelete = async (id, name) => {
-    if (!window.confirm(`Are you sure you want to delete inquiry from "${name}"?`)) return;
+  // Delete request — opens custom confirm modal
+  const handleDelete = (id, name) => {
+    setDeleteConfirm({ id, name });
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteConfirm) return;
+    const { id } = deleteConfirm;
+    setDeleteConfirm(null);
     try {
       const API_BASE = getApiBase();
       const response = await fetch(`${API_BASE}/api/admin/contacts/${id}`, {
@@ -284,6 +292,15 @@ const AdminDashboard = () => {
       <ChangePasswordModal
         isOpen={isPasswordModalOpen}
         onClose={() => setIsPasswordModalOpen(false)}
+      />
+
+      {/* Delete Confirm Modal */}
+      <DeleteConfirmModal
+        isOpen={!!deleteConfirm}
+        name={deleteConfirm?.name || ''}
+        itemType="contact inquiry"
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteConfirm(null)}
       />
     </div>
   );
