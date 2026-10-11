@@ -1,89 +1,142 @@
 const Career = require("../models/Career");
-const cloudinary = require("../config/cloudinary");
-const { isValidEmail, isValidPhone, isFieldEmpty } = require("../middleware/validation");
+const {
+  isValidEmail,
+  isValidPhone,
+  isFieldEmpty,
+  isValidUrl,
+  isValidGraduationYear,
+} = require("../middleware/validation");
 
+// @desc    Submit career application
+// @route   POST /api/careers/apply or POST /api/careers
+// @access  Public
 const submitCareer = async (req, res) => {
   try {
-    const { name, email, phone, college, role, coverLetter } = req.body;
+    const {
+      name,
+      email,
+      phone,
+      college,
+      degree,
+      graduationYear,
+      role,
+      linkedin,
+      github,
+      coverLetter,
+    } = req.body;
 
-    // Validate all required text fields
-    if (
-      isFieldEmpty(name) ||
-      isFieldEmpty(email) ||
-      isFieldEmpty(phone) ||
-      isFieldEmpty(college) ||
-      isFieldEmpty(role) ||
-      isFieldEmpty(coverLetter)
-    ) {
+    // Validate required text fields
+    if (isFieldEmpty(name)) {
       return res.status(400).json({
         success: false,
-        message: "All fields are required.",
+        message: "Full name is required.",
       });
     }
 
-    // Validate email format
-    if (!isValidEmail(email.trim())) {
+    if (isFieldEmpty(email)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid email format.",
+        message: "Email address is required.",
       });
     }
 
-    // Validate phone format
+    if (!isValidEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid email address.",
+      });
+    }
+
+    if (isFieldEmpty(phone)) {
+      return res.status(400).json({
+        success: false,
+        message: "Phone number is required.",
+      });
+    }
+
     if (!isValidPhone(phone)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid phone number.",
+        message: "Please provide a valid phone number (10-13 digits).",
       });
     }
 
-    // // Validate resume file (disabled — file upload temporarily commented out)
-    // if (!req.file) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Resume file is required. Please upload a PDF or Word document.",
-    //   });
-    // }
+    if (isFieldEmpty(college)) {
+      return res.status(400).json({
+        success: false,
+        message: "College or university is required.",
+      });
+    }
 
-    // Trim strings for safety
-    const trimmedData = {
+    if (isFieldEmpty(degree)) {
+      return res.status(400).json({
+        success: false,
+        message: "Degree is required.",
+      });
+    }
+
+    if (isFieldEmpty(graduationYear) || !isValidGraduationYear(graduationYear)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid graduation year (between 2015 and 2035).",
+      });
+    }
+
+    if (isFieldEmpty(role)) {
+      return res.status(400).json({
+        success: false,
+        message: "Applied role is required.",
+      });
+    }
+
+    // Validate optional URLs if provided
+    if (linkedin && !isValidUrl(linkedin)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid LinkedIn profile URL.",
+      });
+    }
+
+    if (github && !isValidUrl(github)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid GitHub profile URL.",
+      });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanRole = role.trim();
+
+    // Duplicate check: Prevent repeated submissions for the exact same role within 24 hours
+    const recentDuplicate = await Career.findOne({
+      email: cleanEmail,
+      role: cleanRole,
+      createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+    });
+
+    if (recentDuplicate) {
+      return res.status(400).json({
+        success: false,
+        message: `An application with this email for "${cleanRole}" has already been submitted recently.`,
+      });
+    }
+
+    // Save to MongoDB with server-controlled initial values
+    const newApplication = await Career.create({
       name: name.trim(),
-      email: email.trim(),
+      email: cleanEmail,
       phone: phone.trim(),
       college: college.trim(),
-      role: role.trim(),
-      coverLetter: coverLetter.trim(),
-    };
-
-    // // Upload to Cloudinary using Base64 Data URI (temporarily disabled)
-    // let cloudinaryResult;
-    // try {
-    //   const b64 = Buffer.from(req.file.buffer).toString("base64");
-    //   const dataURI = `data:${req.file.mimetype};base64,${b64}`;
-    //
-    //   cloudinaryResult = await cloudinary.uploader.upload(dataURI, {
-    //     folder: "careers",
-    //     resource_type: "auto",
-    //     use_filename: true,
-    //     unique_filename: true,
-    //   });
-    // } catch (cloudinaryError) {
-    //   console.error("Cloudinary FULL ERROR:", {
-    //     message: cloudinaryError?.message,
-    //     http_code: cloudinaryError?.http_code,
-    //     name: cloudinaryError?.name,
-    //     error: cloudinaryError,
-    //   });
-    //
-    //   return res.status(500).json({
-    //     success: false,
-    //     message: "Failed to upload resume.",
-    //   });
-    // }
-
-    // Save to MongoDB (without resume URL for now)
-    await Career.create({
-      ...trimmedData,
+      degree: degree.trim(),
+      graduationYear: Number(graduationYear),
+      role: cleanRole,
+      linkedin: linkedin ? linkedin.trim() : "",
+      github: github ? github.trim() : "",
+      coverLetter: coverLetter ? coverLetter.trim() : "",
+      status: "Application Received",
+      appliedAt: new Date(),
+      notes: "",
+      communicationHistory: [],
       resumeUrl: null,
       resumePublicId: null,
     });
@@ -91,12 +144,19 @@ const submitCareer = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Application submitted successfully.",
+      data: {
+        id: newApplication._id,
+        name: newApplication.name,
+        role: newApplication.role,
+        status: newApplication.status,
+        appliedAt: newApplication.appliedAt,
+      },
     });
   } catch (error) {
-    console.error("Career submission error:", error);
+    console.error("Career application submission error:", error.message);
     return res.status(500).json({
       success: false,
-      message: "An error occurred. Please try again later.",
+      message: "An unexpected error occurred while processing your application. Please try again later.",
     });
   }
 };

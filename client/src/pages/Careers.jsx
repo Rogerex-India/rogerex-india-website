@@ -32,6 +32,14 @@ const staggerContainer = {
 
 const VP = { once: true, amount: 0.18, margin: '0px 0px -40px 0px' };
 
+const VALID_ROLES = [
+  'Frontend Developer',
+  'UI Designer',
+  'Backend Engineer',
+  'Intern',
+  'Frontend Developer Intern',
+];
+
 const benefits = [
   {
     icon: 'home_work',
@@ -57,17 +65,35 @@ const openings = [
   { title: 'Intern', type: '6 Months', location: 'Remote', comp: 'PPO Potential' },
 ];
 
+const INITIAL_FORM = {
+  name: '',
+  email: '',
+  phone: '',
+  college: '',
+  degree: '',
+  graduationYear: '',
+  role: '',
+  linkedin: '',
+  github: '',
+};
+
+const INITIAL_ERRORS = {
+  name: '',
+  email: '',
+  phone: '',
+  college: '',
+  degree: '',
+  graduationYear: '',
+  role: '',
+  linkedin: '',
+  github: '',
+};
+
 const Careers = () => {
-  const [formData, setFormData] = useState({
-    name: '', email: '', phone: '', college: '', role: '', coverLetter: '',
-  });
-  const [resumeFile, setResumeFile] = useState(null);
+  const [formData, setFormData] = useState(INITIAL_FORM);
   const [isLoading, setIsLoading] = useState(false);
   const [isFormEnabled, setIsFormEnabled] = useState(true);
-  const [fieldErrors, setFieldErrors] = useState({
-    name: '', email: '', phone: '', college: '', role: '', coverLetter: '',
-  });
-  const fileInputRef = useRef(null);
+  const [fieldErrors, setFieldErrors] = useState(INITIAL_ERRORS);
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -78,7 +104,7 @@ const Careers = () => {
           setIsFormEnabled(data.isCareerFormEnabled);
         }
       } catch (error) {
-        console.error("Failed to fetch form status");
+        console.error('Failed to fetch form status');
       }
     };
     fetchSettings();
@@ -91,29 +117,42 @@ const Careers = () => {
     }
   };
 
-  // const handleFileChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (!file) return;
-  //   const allowed = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/jpg', 'image/png'];
-  //   if (!allowed.includes(file.type)) { toast.error('Only PDF, DOC, DOCX, JPG, or PNG files are allowed.'); return; }
-  //   if (file.size > 10 * 1024 * 1024) { toast.error('File size must be under 10MB.'); return; }
-  //   setResumeFile(file);
-  //   if (fieldErrors.resume) setFieldErrors({ ...fieldErrors, resume: '' });
-  // };
-
   const validate = () => {
     const errors = {};
     if (!formData.name.trim()) errors.name = 'Full name is required.';
+
     if (!formData.email.trim()) {
       errors.email = 'Email address is required.';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
       errors.email = 'Please enter a valid email address.';
     }
-    if (!formData.phone.trim()) errors.phone = 'Phone number is required.';
+
+    if (!formData.phone.trim()) {
+      errors.phone = 'Phone number is required.';
+    } else if (!/^\+?\d[\d\s\-]{8,12}$/.test(formData.phone.trim())) {
+      errors.phone = 'Please enter a valid phone number (10–13 digits).';
+    }
+
     if (!formData.college.trim()) errors.college = 'College / University is required.';
+    if (!formData.degree.trim()) errors.degree = 'Degree is required.';
+
+    const year = Number(formData.graduationYear);
+    if (!formData.graduationYear) {
+      errors.graduationYear = 'Graduation year is required.';
+    } else if (!Number.isInteger(year) || year < 2015 || year > 2035) {
+      errors.graduationYear = 'Please enter a valid graduation year (2015–2035).';
+    }
+
     if (!formData.role) errors.role = 'Please select a role.';
-    if (!formData.coverLetter.trim()) errors.coverLetter = 'Cover letter is required.';
-    // if (!resumeFile) errors.resume = 'Please upload your resume.';
+
+    if (formData.linkedin && !/^https?:\/\/.+/.test(formData.linkedin.trim())) {
+      errors.linkedin = 'Please enter a valid LinkedIn URL (starting with https://).';
+    }
+
+    if (formData.github && !/^https?:\/\/.+/.test(formData.github.trim())) {
+      errors.github = 'Please enter a valid GitHub URL (starting with https://).';
+    }
+
     return errors;
   };
 
@@ -121,29 +160,39 @@ const Careers = () => {
     e.preventDefault();
     const errors = validate();
     if (Object.keys(errors).length > 0) {
-      setFieldErrors(errors);
+      setFieldErrors({ ...INITIAL_ERRORS, ...errors });
       const firstErrorKey = Object.keys(errors)[0];
-      const el = firstErrorKey === 'resume'
-        ? document.getElementById('resume-upload-area')
-        : document.querySelector(`[name="${firstErrorKey}"]`);
+      const el = document.querySelector(`[name="${firstErrorKey}"]`);
       el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
 
-    const payload = new FormData();
-    Object.entries(formData).forEach(([key, val]) => payload.append(key, val));
-    // payload.append('resume', resumeFile); // disabled — file upload commented out
-
     setIsLoading(true);
     try {
-      const response = await fetch('/api/careers', { method: 'POST', body: payload });
+      const payload = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        college: formData.college.trim(),
+        degree: formData.degree.trim(),
+        graduationYear: Number(formData.graduationYear),
+        role: formData.role,
+        linkedin: formData.linkedin.trim(),
+        github: formData.github.trim(),
+      };
+
+      const response = await fetch('/api/careers/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
       const data = await response.json();
+
       if (data.success) {
         toast.success('Application submitted! We will review and get back to you.');
-        setFormData({ name: '', email: '', phone: '', college: '', role: '', coverLetter: '' });
-        setResumeFile(null);
-        setFieldErrors({ name: '', email: '', phone: '', college: '', role: '', coverLetter: '' });
-        if (fileInputRef.current) fileInputRef.current.value = '';
+        setFormData(INITIAL_FORM);
+        setFieldErrors(INITIAL_ERRORS);
       } else {
         toast.error(data.message || 'Something went wrong. Please try again.');
       }
@@ -251,7 +300,6 @@ const Careers = () => {
               className="grid grid-cols-1 md:grid-cols-12 gap-6"
               style={{ minHeight: 480 }}
             >
-              {/* Main image */}
               <motion.div
                 variants={fadeUp}
                 className="md:col-span-8 relative overflow-hidden rounded-[20px] group"
@@ -265,7 +313,6 @@ const Careers = () => {
                 </div>
               </motion.div>
 
-              {/* Side cards */}
               <div className="md:col-span-4 grid grid-rows-2 gap-6">
                 <motion.div
                   variants={fadeUp}
@@ -431,32 +478,60 @@ const Careers = () => {
                   style={{ padding: '48px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 8px 32px var(--shadow-color)' }}
                 >
                   <form className="space-y-5" onSubmit={handleSubmit} noValidate>
+                    {/* Row 1: Name & Email */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div>
-                        <label style={labelStyle}>Full Name</label>
+                        <label style={labelStyle}>Full Name <span style={{ color: '#ef4444' }}>*</span></label>
                         <input name="name" value={formData.name} onChange={handleChange} style={getInputStyle('name')} placeholder="John Doe" type="text" />
                         {fieldErrors.name && <p style={errorStyle}>{fieldErrors.name}</p>}
                       </div>
                       <div>
-                        <label style={labelStyle}>Email Address</label>
+                        <label style={labelStyle}>Email Address <span style={{ color: '#ef4444' }}>*</span></label>
                         <input name="email" value={formData.email} onChange={handleChange} style={getInputStyle('email')} placeholder="john@example.com" type="text" />
                         {fieldErrors.email && <p style={errorStyle}>{fieldErrors.email}</p>}
                       </div>
                     </div>
+
+                    {/* Row 2: Phone & College */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div>
-                        <label style={labelStyle}>Phone Number</label>
+                        <label style={labelStyle}>Phone Number <span style={{ color: '#ef4444' }}>*</span></label>
                         <input name="phone" value={formData.phone} onChange={handleChange} style={getInputStyle('phone')} placeholder="+91 98765 43210" type="tel" />
                         {fieldErrors.phone && <p style={errorStyle}>{fieldErrors.phone}</p>}
                       </div>
                       <div>
-                        <label style={labelStyle}>College / University</label>
+                        <label style={labelStyle}>College / University <span style={{ color: '#ef4444' }}>*</span></label>
                         <input name="college" value={formData.college} onChange={handleChange} style={getInputStyle('college')} placeholder="ABC College, Bangalore" type="text" />
                         {fieldErrors.college && <p style={errorStyle}>{fieldErrors.college}</p>}
                       </div>
                     </div>
+
+                    {/* Row 3: Degree & Graduation Year */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <div>
+                        <label style={labelStyle}>Degree <span style={{ color: '#ef4444' }}>*</span></label>
+                        <input name="degree" value={formData.degree} onChange={handleChange} style={getInputStyle('degree')} placeholder="B.Tech CSE" type="text" />
+                        {fieldErrors.degree && <p style={errorStyle}>{fieldErrors.degree}</p>}
+                      </div>
+                      <div>
+                        <label style={labelStyle}>Graduation Year <span style={{ color: '#ef4444' }}>*</span></label>
+                        <input
+                          name="graduationYear"
+                          value={formData.graduationYear}
+                          onChange={handleChange}
+                          style={getInputStyle('graduationYear')}
+                          placeholder="2025"
+                          type="number"
+                          min="2015"
+                          max="2035"
+                        />
+                        {fieldErrors.graduationYear && <p style={errorStyle}>{fieldErrors.graduationYear}</p>}
+                      </div>
+                    </div>
+
+                    {/* Role */}
                     <div>
-                      <label style={labelStyle}>Applying for Role</label>
+                      <label style={labelStyle}>Applying for Role <span style={{ color: '#ef4444' }}>*</span></label>
                       <select
                         name="role" value={formData.role} onChange={handleChange}
                         style={{ ...getInputStyle('role'), appearance: 'none', cursor: 'pointer' }}
@@ -466,56 +541,23 @@ const Careers = () => {
                         <option value="UI Designer">UI Designer</option>
                         <option value="Backend Engineer">Backend Engineer</option>
                         <option value="Intern">Intern</option>
+                        <option value="Frontend Developer Intern">Frontend Developer Intern</option>
                       </select>
                       {fieldErrors.role && <p style={errorStyle}>{fieldErrors.role}</p>}
                     </div>
-                    {/* Resume Upload — temporarily disabled */}
-                    {/* <div>
-                       <label style={labelStyle}>Resume / CV</label>
-                       <input
-                         ref={fileInputRef}
-                         id="resume-upload"
-                         type="file"
-                         name="resume"
-                         accept=".pdf,.doc,.docx,.png,.jpg"
-                         className="hidden"
-                         onChange={handleFileChange}
-                       />
-                       <div
-                         id="resume-upload-area"
-                         onClick={() => fileInputRef.current?.click()}
-                         style={{
-                           display: 'flex', alignItems: 'center', gap: 14, height: 60,
-                           padding: '0 20px', borderRadius: 12, cursor: 'pointer',
-                           transition: 'all 0.2s',
-                           background: resumeFile ? 'rgba(37,99,235,0.08)' : 'var(--bg-input)',
-                           border: fieldErrors.resume
-                             ? '1.5px solid #ef4444'
-                             : resumeFile ? '1px solid #2563eb' : '2px dashed var(--border-color)',
-                         }}
-                       >
-                         {resumeFile
-                           ? <FileText className="w-5 h-5 shrink-0" style={{ color: '#2563eb' }} />
-                           : <UploadCloud className="w-5 h-5 shrink-0" style={{ color: fieldErrors.resume ? '#ef4444' : 'var(--text-muted)' }} />
-                         }
-                         <span style={{ fontSize: 14, color: resumeFile ? '#2563eb' : fieldErrors.resume ? '#ef4444' : 'var(--text-muted)', fontWeight: resumeFile ? 600 : 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                           {resumeFile ? resumeFile.name : 'Click to upload PDF, DOC, DOCX, JPG or PNG (max 10MB)'}
-                         </span>
-                       </div>
-                       {fieldErrors.resume && <p style={errorStyle}>{fieldErrors.resume}</p>}
-                     </div> */}
-                    {/* Cover Letter */}
-                    <div>
-                      <label style={labelStyle}>Cover Letter / Why Us?</label>
-                      <textarea
-                        name="coverLetter" value={formData.coverLetter} onChange={handleChange}
-                        rows={5} placeholder="Tell us about yourself and why you want to join Rogerex..."
-                        style={{
-                          ...getInputStyle('coverLetter'), height: 'auto', padding: '16px 20px',
-                          resize: 'none', lineHeight: 1.65,
-                        }}
-                      />
-                      {fieldErrors.coverLetter && <p style={errorStyle}>{fieldErrors.coverLetter}</p>}
+
+                    {/* Row 4: LinkedIn & GitHub (optional) */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <div>
+                        <label style={labelStyle}>LinkedIn Profile <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional)</span></label>
+                        <input name="linkedin" value={formData.linkedin} onChange={handleChange} style={getInputStyle('linkedin')} placeholder="https://linkedin.com/in/yourname" type="url" />
+                        {fieldErrors.linkedin && <p style={errorStyle}>{fieldErrors.linkedin}</p>}
+                      </div>
+                      <div>
+                        <label style={labelStyle}>GitHub Profile <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional)</span></label>
+                        <input name="github" value={formData.github} onChange={handleChange} style={getInputStyle('github')} placeholder="https://github.com/yourname" type="url" />
+                        {fieldErrors.github && <p style={errorStyle}>{fieldErrors.github}</p>}
+                      </div>
                     </div>
 
                     <motion.button

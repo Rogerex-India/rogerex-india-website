@@ -4,30 +4,18 @@ import { Eye, Trash2, Clock, CheckCircle2, XCircle, ChevronDown } from 'lucide-r
 
 /* ── Status config for careers ─────────────────────────── */
 const STATUS_OPTIONS = [
-  {
-    value: 'Pending',
-    label: 'Pending',
-    icon: Clock,
-    color: '#f59e0b',
-    bg: 'rgba(245,158,11,0.12)',
-    border: 'rgba(245,158,11,0.3)',
-  },
-  {
-    value: 'Reviewed',
-    label: 'Reviewed',
-    icon: CheckCircle2,
-    color: '#2563eb',
-    bg: 'rgba(37,99,235,0.12)',
-    border: 'rgba(37,99,235,0.3)',
-  },
-  {
-    value: 'Rejected',
-    label: 'Rejected',
-    icon: XCircle,
-    color: '#ef4444',
-    bg: 'rgba(239,68,68,0.12)',
-    border: 'rgba(239,68,68,0.3)',
-  },
+  { value: 'Application Received', label: 'Application Received', icon: Clock, color: '#64748b', bg: 'rgba(100,116,139,0.12)', border: 'rgba(100,116,139,0.3)' },
+  { value: 'Shortlisted', label: 'Shortlisted', icon: CheckCircle2, color: '#2563eb', bg: 'rgba(37,99,235,0.12)', border: 'rgba(37,99,235,0.3)' },
+  { value: 'Rejected', label: 'Rejected', icon: XCircle, color: '#ef4444', bg: 'rgba(239,68,68,0.12)', border: 'rgba(239,68,68,0.3)' },
+  { value: 'Project Details Requested', label: 'Project Details Requested', icon: Clock, color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.3)' },
+  { value: 'Project Submission Instructions Sent', label: 'Submission Sent', icon: Clock, color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)', border: 'rgba(139,92,246,0.3)' },
+  { value: 'Project Submitted', label: 'Project Submitted', icon: CheckCircle2, color: '#06b6d4', bg: 'rgba(6,182,212,0.12)', border: 'rgba(6,182,212,0.3)' },
+  { value: 'Internship Offer Sent', label: 'Offer Sent', icon: Clock, color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.3)' },
+  { value: 'Offer Accepted', label: 'Offer Accepted', icon: CheckCircle2, color: '#10b981', bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.3)' },
+  { value: 'Internship Completed', label: 'Completed', icon: CheckCircle2, color: '#10b981', bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.3)' },
+  // Legacy statuses for backward compat
+  { value: 'Pending', label: 'Pending', icon: Clock, color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.3)' },
+  { value: 'Reviewed', label: 'Reviewed', icon: CheckCircle2, color: '#2563eb', bg: 'rgba(37,99,235,0.12)', border: 'rgba(37,99,235,0.3)' },
 ];
 
 const getStatus = (val) => STATUS_OPTIONS.find((s) => s.value === val) || STATUS_OPTIONS[0];
