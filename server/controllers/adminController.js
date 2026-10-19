@@ -4,6 +4,8 @@ const Career = require("../models/Career");
 const Settings = require("../models/Settings");
 const cloudinary = require("../config/cloudinary");
 const jwt = require("jsonwebtoken");
+const { getTemplateList, getTemplate, renderTemplate } = require("../templates");
+const { sendEmail } = require("../config/mailer");
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -248,6 +250,32 @@ const getCareers = async (req, res) => {
   }
 };
 
+// Get single career submission details
+const getCareerById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const career = await Career.findById(id);
+
+    if (!career) {
+      return res.status(404).json({
+        success: false,
+        message: "Career application not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: career,
+    });
+  } catch (error) {
+    console.error("Fetch career detail error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch application details.",
+    });
+  }
+};
+
 // Update career status or notes
 const updateCareerStatus = async (req, res) => {
   try {
@@ -290,7 +318,7 @@ const deleteCareer = async (req, res) => {
       return res.status(404).json({ success: false, message: "Application not found." });
     }
 
-    // Delete file from Cloudinary
+    // Delete file from Cloudinary if exists
     if (career.resumePublicId) {
       await cloudinary.uploader.destroy(career.resumePublicId);
     }
@@ -310,6 +338,161 @@ const deleteCareer = async (req, res) => {
   }
 };
 
+// Get available email templates for career communication
+const getCareerEmailTemplates = async (req, res) => {
+  try {
+    const templates = getTemplateList();
+    return res.status(200).json({
+      success: true,
+      data: templates,
+    });
+  } catch (error) {
+    console.error("Get templates error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch email templates.",
+    });
+  }
+};
+
+// Preview career email template for a specific candidate
+const previewCareerEmail = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { templateType, variables = {} } = req.body;
+
+    if (!templateType) {
+      return res.status(400).json({
+        success: false,
+        message: "templateType is required.",
+      });
+    }
+
+    const career = await Career.findById(id);
+    if (!career) {
+      return res.status(404).json({
+        success: false,
+        message: "Candidate application not found.",
+      });
+    }
+
+    const mergedVars = {
+      name: career.name,
+      role: career.role,
+      company: "Rogerex India",
+      ...variables,
+    };
+
+    const rendered = renderTemplate(templateType, mergedVars);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        templateId: rendered.templateId,
+        templateName: rendered.templateName,
+        recruitmentStatus: rendered.recruitmentStatus,
+        subject: rendered.subject,
+        html: rendered.html,
+        variables: mergedVars,
+        recipient: career.email,
+      },
+    });
+  } catch (error) {
+    console.error("Email preview error:", error.message);
+    return res.status(400).json({
+      success: false,
+      message: error.message || "Failed to generate email preview.",
+    });
+  }
+};
+
+// Send career email to candidate
+const sendCareerEmail = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { templateType, variables = {}, updateStatus = false, newStatus } = req.body;
+
+    if (!templateType) {
+      return res.status(400).json({
+        success: false,
+        message: "templateType is required.",
+      });
+    }
+
+    const career = await Career.findById(id);
+    if (!career) {
+      return res.status(404).json({
+        success: false,
+        message: "Candidate application not found.",
+      });
+    }
+
+    const mergedVars = {
+      name: career.name,
+      role: career.role,
+      company: "Rogerex India",
+      ...variables,
+    };
+
+    const rendered = renderTemplate(templateType, mergedVars);
+
+    // Send email using configured mailer
+    const mailResult = await sendEmail({
+      to: career.email,
+      subject: rendered.subject,
+      html: rendered.html,
+    });
+
+    const targetStatus = updateStatus ? (newStatus || rendered.recruitmentStatus) : "";
+
+    const communicationEntry = {
+      templateType: rendered.templateId,
+      recipient: career.email,
+      subject: rendered.subject,
+      sentAt: new Date(),
+      status: mailResult.success ? "Sent" : "Failed",
+      error: mailResult.success ? null : (mailResult.error?.message || "Email delivery failed"),
+      relatedRecruitmentStatus: targetStatus,
+      renderedContent: rendered.html,
+    };
+
+    career.communicationHistory.unshift(communicationEntry);
+
+    // Update status if requested
+    if (updateStatus && targetStatus) {
+      career.status = targetStatus;
+    }
+
+    await career.save();
+
+    if (!mailResult.success) {
+      return res.status(502).json({
+        success: false,
+        message: `Email sending failed: ${mailResult.error?.message || "Delivery error"}. Communication audit log recorded as Failed.`,
+        data: {
+          communication: communicationEntry,
+          career,
+        },
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Email successfully sent to ${career.email}.`,
+      data: {
+        communication: communicationEntry,
+        career,
+      },
+    });
+  } catch (error) {
+    console.error("Send career email error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to send email.",
+    });
+  }
+};
+
 // ---------------- SETTINGS ---------------- //
 
 // Get global settings (publicly accessible)
@@ -317,7 +500,7 @@ const getSettings = async (req, res) => {
   try {
     let settings = await Settings.findOne();
     if (!settings) {
-      settings = await Settings.create({}); // create default settings if none exist
+      settings = await Settings.create({});
     }
     return res.status(200).json({
       success: true,
@@ -369,8 +552,12 @@ module.exports = {
   seedDefaultAdmin,
   changePassword,
   getCareers,
+  getCareerById,
   updateCareerStatus,
   deleteCareer,
+  getCareerEmailTemplates,
+  previewCareerEmail,
+  sendCareerEmail,
   getSettings,
   updateSettings,
 };

@@ -1,0 +1,950 @@
+{
+  "info": {
+    "_postman_id": "rogerex-careers-api-collection",
+    "name": "Rogerex India — Careers API",
+    "description": "Complete Postman collection for all Careers-related APIs.\n\n**Environment Variables Required:**\n- `baseUrl` → `http://localhost:5000`\n- `adminToken` → obtained from Admin Login request\n- `applicationId` → auto-set from Submit Application response",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000", "type": "string" },
+    { "key": "adminToken", "value": "", "type": "string", "description": "Set this after running Admin Login" },
+    { "key": "applicationId", "value": "", "type": "string", "description": "Auto-set from Submit Application response" }
+  ],
+  "item": [
+    {
+      "name": "🔐 Auth",
+      "item": [
+        {
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response is successful', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.true;",
+                  "  pm.expect(body.token).to.be.a('string');",
+                  "  pm.collectionVariables.set('adminToken', body.token);",
+                  "  console.log('Admin token saved:', body.token.slice(0,20) + '...');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "login"]
+            },
+            "description": "Login as admin. Saves `adminToken` automatically to collection variable."
+          }
+        },
+        {
+          "name": "Admin Login — Missing Fields (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Response has success=false', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"admin\"\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📝 Career Applications — Public",
+      "item": [
+        {
+          "name": "Submit Application (Valid)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Response structure is correct', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.true;",
+                  "  pm.expect(body.message).to.include('successfully');",
+                  "  pm.expect(body.data).to.have.property('id');",
+                  "  pm.expect(body.data).to.have.property('name');",
+                  "  pm.expect(body.data).to.have.property('role');",
+                  "  pm.expect(body.data).to.have.property('status');",
+                  "  pm.expect(body.data).to.have.property('appliedAt');",
+                  "  pm.expect(body.data.status).to.equal('Application Received');",
+                  "  pm.collectionVariables.set('applicationId', body.data.id);",
+                  "  console.log('Application ID saved:', body.data.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rahul Sharma\",\n  \"email\": \"rahul.sharma.test@example.com\",\n  \"phone\": \"9876543210\",\n  \"college\": \"ABC University\",\n  \"degree\": \"B.Tech CSE\",\n  \"graduationYear\": 2027,\n  \"role\": \"Frontend Developer Intern\",\n  \"linkedin\": \"https://linkedin.com/in/rahul\",\n  \"github\": \"https://github.com/rahul\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/careers/apply",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "careers", "apply"]
+            },
+            "description": "Submit a new career application. Saves `applicationId` to collection variable."
+          }
+        },
+        {
+          "name": "Submit Application — Missing name (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Validation error returned', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.false;",
+                  "  pm.expect(body.message).to.include('name');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"rahul@example.com\",\n  \"phone\": \"9876543210\",\n  \"college\": \"ABC University\",\n  \"degree\": \"B.Tech CSE\",\n  \"graduationYear\": 2027,\n  \"role\": \"Frontend Developer Intern\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/careers/apply",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "careers", "apply"]
+            }
+          }
+        },
+        {
+          "name": "Submit Application — Invalid Email (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Email validation error', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.false;",
+                  "  pm.expect(body.message.toLowerCase()).to.include('email');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rahul Sharma\",\n  \"email\": \"not-an-email\",\n  \"phone\": \"9876543210\",\n  \"college\": \"ABC University\",\n  \"degree\": \"B.Tech CSE\",\n  \"graduationYear\": 2027,\n  \"role\": \"Frontend Developer Intern\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/careers/apply",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "careers", "apply"]
+            }
+          }
+        },
+        {
+          "name": "Submit Application — Invalid Phone (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Phone validation error', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.false;",
+                  "  pm.expect(body.message.toLowerCase()).to.include('phone');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rahul Sharma\",\n  \"email\": \"rahul@example.com\",\n  \"phone\": \"123\",\n  \"college\": \"ABC University\",\n  \"degree\": \"B.Tech CSE\",\n  \"graduationYear\": 2027,\n  \"role\": \"Frontend Developer Intern\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/careers/apply",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "careers", "apply"]
+            }
+          }
+        },
+        {
+          "name": "Submit Application — Invalid Graduation Year (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Graduation year validation error', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.false;",
+                  "  pm.expect(body.message.toLowerCase()).to.include('graduation year');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rahul Sharma\",\n  \"email\": \"rahul@example.com\",\n  \"phone\": \"9876543210\",\n  \"college\": \"ABC University\",\n  \"degree\": \"B.Tech CSE\",\n  \"graduationYear\": 1999,\n  \"role\": \"Frontend Developer Intern\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/careers/apply",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "careers", "apply"]
+            }
+          }
+        },
+        {
+          "name": "Submit Application — Missing Role (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Role validation error', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rahul Sharma\",\n  \"email\": \"rahul@example.com\",\n  \"phone\": \"9876543210\",\n  \"college\": \"ABC University\",\n  \"degree\": \"B.Tech CSE\",\n  \"graduationYear\": 2027\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/careers/apply",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "careers", "apply"]
+            }
+          }
+        },
+        {
+          "name": "Submit Application — Missing Degree (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Degree required error', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.false;",
+                  "  pm.expect(body.message.toLowerCase()).to.include('degree');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rahul Sharma\",\n  \"email\": \"rahul@example.com\",\n  \"phone\": \"9876543210\",\n  \"college\": \"ABC University\",\n  \"graduationYear\": 2027,\n  \"role\": \"Frontend Developer Intern\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/careers/apply",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "careers", "apply"]
+            }
+          }
+        },
+        {
+          "name": "Career Form Status Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has isCareerFormEnabled', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('isCareerFormEnabled');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "status"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👔 Admin — Career Management",
+      "item": [
+        {
+          "name": "List All Applications",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array of careers', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.true;",
+                  "  pm.expect(body.data).to.be.an('array');",
+                  "  if (body.data.length > 0) {",
+                  "    const first = body.data[0];",
+                  "    pm.expect(first).to.have.property('_id');",
+                  "    pm.expect(first).to.have.property('name');",
+                  "    pm.expect(first).to.have.property('email');",
+                  "    pm.expect(first).to.have.property('role');",
+                  "    pm.expect(first).to.have.property('status');",
+                  "    pm.collectionVariables.set('applicationId', first._id);",
+                  "    console.log('First application ID:', first._id);",
+                  "  }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers"]
+            },
+            "description": "Get all career applications. Requires admin auth token."
+          }
+        },
+        {
+          "name": "List Applications — Unauthorized (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Unauthorized error', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers"]
+            }
+          }
+        },
+        {
+          "name": "Get Application by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns single application with all fields', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.true;",
+                  "  const d = body.data;",
+                  "  pm.expect(d).to.have.property('_id');",
+                  "  pm.expect(d).to.have.property('name');",
+                  "  pm.expect(d).to.have.property('email');",
+                  "  pm.expect(d).to.have.property('phone');",
+                  "  pm.expect(d).to.have.property('college');",
+                  "  pm.expect(d).to.have.property('degree');",
+                  "  pm.expect(d).to.have.property('graduationYear');",
+                  "  pm.expect(d).to.have.property('role');",
+                  "  pm.expect(d).to.have.property('status');",
+                  "  pm.expect(d).to.have.property('appliedAt');",
+                  "  pm.expect(d).to.have.property('communicationHistory');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/{{applicationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "{{applicationId}}"]
+            },
+            "description": "Get a single career application by ID. Set `applicationId` variable from Submit or List responses."
+          }
+        },
+        {
+          "name": "Get Application — Non-existent ID (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Not found error', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/000000000000000000000000",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "000000000000000000000000"]
+            }
+          }
+        },
+        {
+          "name": "Update Recruitment Status — Shortlisted",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Status updated correctly', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.true;",
+                  "  pm.expect(body.data.status).to.equal('Shortlisted');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"Shortlisted\"\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/{{applicationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "{{applicationId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Status — Rejected",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Rejection status set', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data.status).to.equal('Rejected');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"Rejected\"\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/{{applicationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "{{applicationId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Status — All lifecycle stages",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Application Received\",\n  \"_comment_valid_statuses\": [\n    \"Application Received\",\n    \"Shortlisted\",\n    \"Rejected\",\n    \"Project Details Requested\",\n    \"Project Submission Instructions Sent\",\n    \"Project Submitted\",\n    \"Internship Offer Sent\",\n    \"Offer Accepted\",\n    \"Internship Completed\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/{{applicationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "{{applicationId}}"]
+            }
+          }
+        },
+        {
+          "name": "Save Admin Notes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Notes saved', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.true;",
+                  "  pm.expect(body.data.notes).to.equal('Strong candidate, good GitHub profile.');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"notes\": \"Strong candidate, good GitHub profile.\"\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/{{applicationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "{{applicationId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📧 Email Templates",
+      "item": [
+        {
+          "name": "Get All Email Templates",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns 7 templates', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.true;",
+                  "  pm.expect(body.data).to.be.an('array').with.lengthOf(7);",
+                  "  const ids = body.data.map(t => t.id);",
+                  "  pm.expect(ids).to.include('shortlist');",
+                  "  pm.expect(ids).to.include('rejection');",
+                  "  pm.expect(ids).to.include('project-details-request');",
+                  "  pm.expect(ids).to.include('project-submission');",
+                  "  pm.expect(ids).to.include('offer-letter');",
+                  "  pm.expect(ids).to.include('offer-acceptance');",
+                  "  pm.expect(ids).to.include('completion');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/email/templates",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "email", "templates"]
+            }
+          }
+        },
+        {
+          "name": "Preview — Shortlist Email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Preview has html and subject', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.true;",
+                  "  pm.expect(body.data.html).to.be.a('string').and.not.empty;",
+                  "  pm.expect(body.data.subject).to.be.a('string').and.not.empty;",
+                  "  pm.expect(body.data.recipient).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"templateType\": \"shortlist\",\n  \"variables\": {}\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/{{applicationId}}/email/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "{{applicationId}}", "email", "preview"]
+            }
+          }
+        },
+        {
+          "name": "Preview — Rejection Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"templateType\": \"rejection\",\n  \"variables\": {}\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/{{applicationId}}/email/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "{{applicationId}}", "email", "preview"]
+            }
+          }
+        },
+        {
+          "name": "Preview — Project Details Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"templateType\": \"project-details-request\",\n  \"variables\": {\n    \"projectName\": \"Technical Portfolio Assessment\",\n    \"deadline\": \"within 48 hours\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/{{applicationId}}/email/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "{{applicationId}}", "email", "preview"]
+            }
+          }
+        },
+        {
+          "name": "Preview — Project Submission Instructions",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"templateType\": \"project-submission\",\n  \"variables\": {\n    \"projectName\": \"Practical Milestone Challenge\",\n    \"deadline\": \"within 3 days\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/{{applicationId}}/email/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "{{applicationId}}", "email", "preview"]
+            }
+          }
+        },
+        {
+          "name": "Preview — Offer Letter",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"templateType\": \"offer-letter\",\n  \"variables\": {\n    \"internshipStartDate\": \"1 November 2026\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/{{applicationId}}/email/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "{{applicationId}}", "email", "preview"]
+            }
+          }
+        },
+        {
+          "name": "Preview — Offer Acceptance",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"templateType\": \"offer-acceptance\",\n  \"variables\": {\n    \"internshipStartDate\": \"1 November 2026\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/{{applicationId}}/email/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "{{applicationId}}", "email", "preview"]
+            }
+          }
+        },
+        {
+          "name": "Preview — Completion Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"templateType\": \"completion\",\n  \"variables\": {}\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/{{applicationId}}/email/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "{{applicationId}}", "email", "preview"]
+            }
+          }
+        },
+        {
+          "name": "Preview — Invalid Template (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Template not found error', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"templateType\": \"non-existent-template\"\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/{{applicationId}}/email/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "{{applicationId}}", "email", "preview"]
+            }
+          }
+        },
+        {
+          "name": "Send Email — Shortlist (requires EMAIL_USER/PASS configured)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "  pm.test('Email sent successfully', () => {",
+                  "    pm.expect(body.success).to.be.true;",
+                  "    pm.expect(body.data.communication.status).to.equal('Sent');",
+                  "  });",
+                  "} else if (pm.response.code === 502) {",
+                  "  pm.test('Email failed — server not configured (expected if no EMAIL_USER)', () => {",
+                  "    pm.expect(body.success).to.be.false;",
+                  "    console.warn('Email failed — configure EMAIL_USER and EMAIL_PASS in server/.env');",
+                  "  });",
+                  "} else {",
+                  "  pm.test('Unexpected status', () => pm.expect(pm.response.code).to.be.oneOf([200, 502]));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"templateType\": \"shortlist\",\n  \"variables\": {},\n  \"updateStatus\": true,\n  \"newStatus\": \"Shortlisted\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/{{applicationId}}/email/send",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "{{applicationId}}", "email", "send"]
+            },
+            "description": "⚠️ Requires EMAIL_USER and EMAIL_PASS in server/.env. If not configured, returns 502 with communication logged as Failed."
+          }
+        },
+        {
+          "name": "Send Email — Missing templateType (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Validation error', () => {",
+                  "  pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"variables\": {}\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/{{applicationId}}/email/send",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "{{applicationId}}", "email", "send"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🗑️ Delete Application",
+      "item": [
+        {
+          "name": "Delete Application",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Deletion confirmed', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.be.true;",
+                  "  pm.collectionVariables.set('applicationId', '');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/careers/{{applicationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "careers", "{{applicationId}}"]
+            },
+            "description": "⚠️ Run this last — deletes the test application."
+          }
+        }
+      ]
+    },
+    {
+      "name": "✅ Health Check",
+      "item": [
+        {
+          "name": "Server Health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Server is healthy', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.equal('ok');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "health"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

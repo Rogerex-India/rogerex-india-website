@@ -1,5 +1,46 @@
 const mongoose = require("mongoose");
 
+const communicationHistorySchema = new mongoose.Schema(
+  {
+    templateType: {
+      type: String,
+      required: true,
+    },
+    recipient: {
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true,
+    },
+    subject: {
+      type: String,
+      required: true,
+    },
+    sentAt: {
+      type: Date,
+      default: Date.now,
+    },
+    status: {
+      type: String,
+      enum: ["Sent", "Failed"],
+      default: "Sent",
+    },
+    relatedRecruitmentStatus: {
+      type: String,
+      default: "",
+    },
+    renderedContent: {
+      type: String,
+      default: "",
+    },
+    error: {
+      type: String,
+      default: null,
+    },
+  },
+  { _id: true }
+);
+
 const careerSchema = new mongoose.Schema(
   {
     name: {
@@ -23,14 +64,33 @@ const careerSchema = new mongoose.Schema(
       required: [true, "College is required"],
       trim: true,
     },
+    degree: {
+      type: String,
+      required: [true, "Degree is required"],
+      trim: true,
+    },
+    graduationYear: {
+      type: Number,
+      required: [true, "Graduation Year is required"],
+    },
     role: {
       type: String,
       required: [true, "Applied Role is required"],
       trim: true,
     },
+    linkedin: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    github: {
+      type: String,
+      default: "",
+      trim: true,
+    },
     coverLetter: {
       type: String,
-      required: [true, "Cover Letter is required"],
+      default: "",
       trim: true,
     },
     resumeUrl: {
@@ -43,12 +103,32 @@ const careerSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "Reviewed", "Rejected"],
-      default: "Pending",
+      enum: [
+        "Application Received",
+        "Shortlisted",
+        "Rejected",
+        "Project Details Requested",
+        "Project Submission Instructions Sent",
+        "Project Submitted",
+        "Internship Offer Sent",
+        "Offer Accepted",
+        "Internship Completed",
+        "Pending",
+        "Reviewed",
+      ],
+      default: "Application Received",
+    },
+    appliedAt: {
+      type: Date,
+      default: Date.now,
     },
     notes: {
       type: String,
       default: "",
+    },
+    communicationHistory: {
+      type: [communicationHistorySchema],
+      default: [],
     },
   },
   {
