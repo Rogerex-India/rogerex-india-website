@@ -2,7 +2,10 @@ const nodemailer = require("nodemailer");
 
 // Function to send emails with safe credential validation
 const sendEmail = async (mailOptions) => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+  const emailUser = (process.env.EMAIL_USER || "").trim();
+  const emailPass = (process.env.EMAIL_PASS || "").replace(/\s+/g, "");
+
+  if (!emailUser || !emailPass) {
     console.warn("Email warning: EMAIL_USER or EMAIL_PASS not configured in environment.");
     return {
       success: false,
@@ -14,13 +17,15 @@ const sendEmail = async (mailOptions) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: emailUser,
+        pass: emailPass,
       },
     });
 
+    const fromAddress = process.env.EMAIL_FROM || `"Rogerex India" <${emailUser}>`;
+
     const result = await transporter.sendMail({
-      from: process.env.EMAIL_FROM || `"Rogerex India" <${process.env.EMAIL_USER}>`,
+      from: fromAddress,
       ...mailOptions,
     });
 

@@ -4,6 +4,10 @@ import { motion } from 'framer-motion';
 import { Users, GraduationCap, MapPin, Send, FileText, UploadCloud, ArrowRight, Heart } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+const API_BASE = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:5000'
+  : (import.meta.env.VITE_API_URL || 'http://localhost:5000');
+
 /* ─── Animation presets ────────────────────── */
 const EASE = [0.16, 1, 0.3, 1];
 
@@ -75,6 +79,7 @@ const INITIAL_FORM = {
   role: '',
   linkedin: '',
   github: '',
+  coverLetter: '',
 };
 
 const INITIAL_ERRORS = {
@@ -87,6 +92,7 @@ const INITIAL_ERRORS = {
   role: '',
   linkedin: '',
   github: '',
+  coverLetter: '',
 };
 
 const Careers = () => {
@@ -94,11 +100,26 @@ const Careers = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFormEnabled, setIsFormEnabled] = useState(true);
   const [fieldErrors, setFieldErrors] = useState(INITIAL_ERRORS);
+  const [isSubmitted, setIsSubmitted] = useState(() => {
+    try {
+      return !!localStorage.getItem('rogerex_career_submitted');
+    } catch {
+      return false;
+    }
+  });
+  const [submittedInfo, setSubmittedInfo] = useState(() => {
+    try {
+      const saved = localStorage.getItem('rogerex_career_submitted');
+      return saved ? JSON.parse(saved) : { name: '', role: '' };
+    } catch {
+      return { name: '', role: '' };
+    }
+  });
 
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await fetch('/api/status');
+        const response = await fetch(`${API_BASE}/api/status`);
         const data = await response.json();
         if (data.success) {
           setIsFormEnabled(data.isCareerFormEnabled);
@@ -179,9 +200,10 @@ const Careers = () => {
         role: formData.role,
         linkedin: formData.linkedin.trim(),
         github: formData.github.trim(),
+        coverLetter: formData.coverLetter.trim(),
       };
 
-      const response = await fetch('/api/careers/apply', {
+      const response = await fetch(`${API_BASE}/api/careers/apply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -190,9 +212,17 @@ const Careers = () => {
       const data = await response.json();
 
       if (data.success) {
-        toast.success('Application submitted! We will review and get back to you.');
+        const info = { name: formData.name.trim(), role: formData.role };
+        try {
+          localStorage.setItem('rogerex_career_submitted', JSON.stringify(info));
+        } catch {
+          // ignore
+        }
+        setSubmittedInfo(info);
+        setIsSubmitted(true);
         setFormData(INITIAL_FORM);
         setFieldErrors(INITIAL_ERRORS);
+        toast.success('Application submitted! We will review and get back to you.');
       } else {
         toast.error(data.message || 'Something went wrong. Please try again.');
       }
@@ -454,6 +484,90 @@ const Careers = () => {
         <section id="apply" style={{ background: 'var(--bg-alt)', padding: '80px 32px', borderTop: '1px solid var(--border-color-subtle)' }} className="transition-colors duration-300">
           <div style={{ maxWidth: 720, margin: '0 auto' }}>
             {isFormEnabled ? (
+            isSubmitted ? (
+              /* ── Success Card ── */
+              <motion.div
+                initial={{ opacity: 0, scale: 0.94 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, ease: EASE }}
+                className="text-center"
+              >
+                <div
+                  style={{
+                    padding: '56px 48px',
+                    background: 'var(--bg-card)',
+                    borderRadius: 24,
+                    border: '1px solid var(--border-color)',
+                    boxShadow: '0 8px 32px var(--shadow-color)',
+                  }}
+                >
+                  {/* Animated checkmark */}
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2, type: 'spring', stiffness: 200, damping: 15 }}
+                    style={{
+                      width: 72,
+                      height: 72,
+                      margin: '0 auto 24px',
+                      background: 'rgba(16,185,129,0.12)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: '2px solid rgba(16,185,129,0.3)',
+                    }}
+                  >
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </motion.div>
+
+                  <motion.h3
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.35, duration: 0.5 }}
+                    style={{ fontSize: 26, fontWeight: 700, color: 'var(--text-main)', marginBottom: 10 }}
+                  >
+                    Application Submitted!
+                  </motion.h3>
+
+                  <motion.p
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.45, duration: 0.5 }}
+                    style={{ fontSize: 16, color: 'var(--text-muted)', marginBottom: 28, lineHeight: 1.65 }}
+                  >
+                    {submittedInfo.name ? (
+                      <>
+                        Thank you, <strong style={{ color: 'var(--text-main)' }}>{submittedInfo.name}</strong>! Your application {submittedInfo.role ? <>for <strong style={{ color: '#2563eb' }}>{submittedInfo.role}</strong></> : ''} has been received.
+                      </>
+                    ) : (
+                      <>Your application has been received successfully.</>
+                    )}
+                    <br />
+                    We'll review it and get back to you within 3–5 business days.
+                  </motion.p>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.55, duration: 0.5 }}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      padding: '10px 20px',
+                      borderRadius: 10,
+                      background: 'rgba(16,185,129,0.08)',
+                      border: '1px solid rgba(16,185,129,0.25)',
+                    }}
+                  >
+                    <span style={{ fontSize: 13, color: '#10b981', fontWeight: 600 }}>📬 Check your inbox for a confirmation email</span>
+                  </motion.div>
+                </div>
+              </motion.div>
+            ) : (
               <>
                 <motion.div
                   initial="hidden"
@@ -560,6 +674,26 @@ const Careers = () => {
                       </div>
                     </div>
 
+                    {/* Cover Letter (optional) */}
+                    <div>
+                      <label style={labelStyle}>Cover Letter <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional)</span></label>
+                      <textarea
+                        name="coverLetter"
+                        value={formData.coverLetter}
+                        onChange={handleChange}
+                        placeholder="Tell us about yourself, your passion for tech, and why you'd like to join Rogerex..."
+                        rows={5}
+                        style={{
+                          width: '100%', padding: '14px 20px', borderRadius: 12,
+                          background: 'var(--bg-input)',
+                          border: '1px solid var(--border-color)',
+                          color: 'var(--text-main)', fontSize: 15, outline: 'none',
+                          fontFamily: 'Inter, sans-serif', transition: 'border-color 0.2s, background-color 0.3s',
+                          resize: 'vertical', lineHeight: 1.6,
+                        }}
+                      />
+                    </div>
+
                     <motion.button
                       whileTap={{ scale: 0.97 }}
                       type="submit"
@@ -578,8 +712,9 @@ const Careers = () => {
                   </form>
                 </motion.div>
               </>
-            ) : (
-              <motion.div
+            )
+          ) : (
+            <motion.div
                 initial="hidden"
                 whileInView="visible"
                 viewport={VP}
