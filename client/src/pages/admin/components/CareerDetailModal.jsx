@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Save, Mail, Eye, ChevronDown, Clock, CheckCircle2, XCircle, Send, Linkedin, Github, ExternalLink } from 'lucide-react';
+import { X, Save, Mail, Eye, ChevronDown, Clock, CheckCircle2, XCircle, Send, Link2, GitBranch, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { useAdminAuth, getApiBase } from '../../../context/AdminAuthContext';
@@ -34,6 +34,7 @@ const CareerDetailModal = ({
   onSaveNote,
   onStatusChange,
   onDelete,
+  onCareerUpdate,
 }) => {
   const { getAuthHeaders } = useAdminAuth();
   const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'email' | 'history'
@@ -91,7 +92,13 @@ const CareerDetailModal = ({
       const data = await resp.json();
       if (data.success) {
         toast.success(`Email sent to ${selectedCareer.email}`);
-        onStatusChange(selectedCareer._id, data.data.career.status);
+        // Push updated career (with new communicationHistory & status) to parent
+        if (onCareerUpdate && data.data?.career) {
+          onCareerUpdate(data.data.career);
+        } else {
+          // Fallback: update status only via the old callback
+          onStatusChange(selectedCareer._id, data.data.career.status);
+        }
         setEmailPreview(null);
         setConfirmed(false);
         setSelectedTemplate('');

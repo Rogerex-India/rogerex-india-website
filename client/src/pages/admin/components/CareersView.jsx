@@ -93,6 +93,16 @@ const CareersView = () => {
     }
   };
 
+  // Called by CareerDetailModal after a successful email send to sync the
+  // updated career record (with new communicationHistory & status) into state.
+  // This ensures the History tab reflects new entries immediately.
+  const handleCareerUpdate = (updatedCareer) => {
+    setCareers((prev) =>
+      prev.map((c) => (c._id === updatedCareer._id ? updatedCareer : c))
+    );
+    setSelectedCareer(updatedCareer);
+  };
+
   // Delete — opens custom confirm modal
   const handleDelete = (id, name) => {
     setDeleteConfirm({ id, name });
@@ -154,6 +164,7 @@ const CareersView = () => {
         onSaveNote={handleSaveNote}
         onStatusChange={handleStatusChange}
         onDelete={handleDelete}
+        onCareerUpdate={handleCareerUpdate}
       />
 
       {/* Delete Confirm Modal */}
