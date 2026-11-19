@@ -35,21 +35,60 @@ const getStatus = (val) => STATUS_OPTIONS.find((s) => s.value === val) || STATUS
 /* ── Custom Status Dropdown ────────────────────────────── */
 const StatusDropdown = ({ value, onChange }) => {
   const [open, setOpen] = useState(false);
-  const ref = useRef(null);
+  const [coords, setCoords] = useState({ top: 0, left: 0, openUpwards: false });
+  const triggerRef = useRef(null);
+  const dropdownRef = useRef(null);
   const current = getStatus(value);
   const Icon = current.icon;
 
+  const updateCoords = () => {
+    if (!triggerRef.current) return;
+    const rect = triggerRef.current.getBoundingClientRect();
+    const dropdownHeight = 160;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const openUpwards = spaceBelow < dropdownHeight && rect.top > dropdownHeight;
+
+    setCoords({
+      top: openUpwards ? rect.top - 6 : rect.bottom + 6,
+      left: Math.max(12, Math.min(rect.left, window.innerWidth - 180)),
+      openUpwards,
+    });
+  };
+
+  const handleToggle = (e) => {
+    e.stopPropagation();
+    if (!open) {
+      updateCoords();
+    }
+    setOpen((o) => !o);
+  };
+
   useEffect(() => {
-    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    if (!open) return;
+    const handler = (e) => {
+      if (
+        triggerRef.current && !triggerRef.current.contains(e.target) &&
+        dropdownRef.current && !dropdownRef.current.contains(e.target)
+      ) {
+        setOpen(false);
+      }
+    };
     document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
+    window.addEventListener('scroll', updateCoords, true);
+    window.addEventListener('resize', updateCoords);
+    return () => {
+      document.removeEventListener('mousedown', handler);
+      window.removeEventListener('scroll', updateCoords, true);
+      window.removeEventListener('resize', updateCoords);
+    };
+  }, [open]);
 
   return (
-    <div ref={ref} className="relative inline-block" style={{ minWidth: 130 }}>
+    <div className="relative inline-block" style={{ minWidth: 130 }}>
       {/* Trigger pill */}
       <button
-        onClick={(e) => { e.stopPropagation(); setOpen((o) => !o); }}
+        ref={triggerRef}
+        onClick={handleToggle}
         className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all cursor-pointer"
         style={{
           background: current.bg,
@@ -69,16 +108,24 @@ const StatusDropdown = ({ value, onChange }) => {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: -6, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -4, scale: 0.96 }}
-            transition={{ duration: 0.15, ease: 'easeOut' }}
-            className="absolute left-0 top-full mt-1.5 z-50 rounded-xl overflow-hidden shadow-xl"
+            ref={dropdownRef}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.14, ease: 'easeOut' }}
+            className="rounded-xl shadow-2xl py-1"
             style={{
+              position: 'fixed',
+              top: coords.openUpwards ? 'auto' : `${coords.top}px`,
+              bottom: coords.openUpwards ? `${window.innerHeight - coords.top}px` : 'auto',
+              left: `${coords.left}px`,
+              zIndex: 9999,
+              minWidth: 160,
               background: 'var(--bg-card)',
               border: '1px solid var(--border-color)',
-              minWidth: 148,
+              boxShadow: '0 12px 36px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.25)',
             }}
+            onClick={(e) => e.stopPropagation()}
           >
             {STATUS_OPTIONS.map((opt) => {
               const OIcon = opt.icon;
@@ -86,19 +133,27 @@ const StatusDropdown = ({ value, onChange }) => {
               return (
                 <button
                   key={opt.value}
-                  onClick={(e) => { e.stopPropagation(); onChange(opt.value); setOpen(false); }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold transition-colors cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onChange(opt.value);
+                    setOpen(false);
+                  }}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold transition-colors cursor-pointer text-left"
                   style={{
                     background: isActive ? opt.bg : 'transparent',
                     color: isActive ? opt.color : 'var(--text-muted)',
                   }}
-                  onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = 'var(--bg-input)'; }}
-                  onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) e.currentTarget.style.background = 'var(--bg-input)';
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) e.currentTarget.style.background = 'transparent';
+                  }}
                 >
                   <OIcon className="w-3.5 h-3.5 shrink-0" style={{ color: opt.color }} />
-                  {opt.label}
+                  <span className="truncate">{opt.label}</span>
                   {isActive && (
-                    <span className="ml-auto w-1.5 h-1.5 rounded-full" style={{ background: opt.color }} />
+                    <span className="ml-auto w-1.5 h-1.5 rounded-full shrink-0" style={{ background: opt.color }} />
                   )}
                 </button>
               );
