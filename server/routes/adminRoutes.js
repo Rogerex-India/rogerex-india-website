@@ -16,6 +16,13 @@ const {
   getSettings,
   updateSettings,
 } = require("../controllers/adminController");
+const {
+  getAdminJobs,
+  createJob,
+  updateJob,
+  toggleJobStatus,
+  deleteJob,
+} = require("../controllers/jobController");
 const { protectAdmin } = require("../middleware/authMiddleware");
 
 // Public admin login
@@ -43,5 +50,12 @@ router.post("/careers/:id/email/send", protectAdmin, sendCareerEmail);
 // Settings
 router.get("/settings", protectAdmin, getSettings);
 router.put("/settings", protectAdmin, updateSettings);
+
+// Job Openings Management
+router.get("/jobs", protectAdmin, getAdminJobs);
+router.post("/jobs", protectAdmin, createJob);
+router.put("/jobs/:id", protectAdmin, updateJob);
+router.patch("/jobs/:id/toggle", protectAdmin, toggleJobStatus);
+router.delete("/jobs/:id", protectAdmin, deleteJob);
 
 module.exports = router;

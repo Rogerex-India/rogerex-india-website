@@ -12,6 +12,7 @@ import ContactTable from './components/ContactTable';
 import ContactDetailModal from './components/ContactDetailModal';
 import ChangePasswordModal from './components/ChangePasswordModal';
 import CareersView from './components/CareersView';
+import JobOpeningsView from './components/JobOpeningsView';
 import SettingsView from './components/SettingsView';
 import DeleteConfirmModal from './components/DeleteConfirmModal';
 
@@ -226,17 +227,22 @@ const AdminDashboard = () => {
       <main className="max-w-container-max mx-auto px-4 md:px-8 py-8">
         {/* Tabs */}
         <div className="flex gap-4 mb-8 border-b" style={{ borderColor: 'var(--border-color)' }}>
-          {['contacts', 'careers', 'settings'].map((view) => (
+          {[
+            { id: 'contacts', label: 'Contacts' },
+            { id: 'careers', label: 'Applications' },
+            { id: 'jobs', label: 'Job Openings' },
+            { id: 'settings', label: 'Settings' },
+          ].map(({ id, label }) => (
             <button
-              key={view}
-              onClick={() => setCurrentView(view)}
-              className="px-4 py-2 capitalize font-semibold transition-colors"
+              key={id}
+              onClick={() => setCurrentView(id)}
+              className="px-4 py-2 font-semibold transition-colors cursor-pointer"
               style={{
-                color: currentView === view ? '#2563eb' : 'var(--text-muted)',
-                borderBottom: currentView === view ? '2px solid #2563eb' : '2px solid transparent',
+                color: currentView === id ? '#2563eb' : 'var(--text-muted)',
+                borderBottom: currentView === id ? '2px solid #2563eb' : '2px solid transparent',
               }}
             >
-              {view}
+              {label}
             </button>
           ))}
         </div>
@@ -274,6 +280,7 @@ const AdminDashboard = () => {
         )}
 
         {currentView === 'careers' && <CareersView />}
+        {currentView === 'jobs' && <JobOpeningsView />}
         {currentView === 'settings' && <SettingsView />}
       </main>
 

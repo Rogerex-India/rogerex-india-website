@@ -3,12 +3,14 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const { seedDefaultAdmin } = require("./controllers/adminController");
+const Job = require("./models/Job");
 
 const app = express();
 
 // Connect to MongoDB
 connectDB().then(() => {
   seedDefaultAdmin();
+  Job.seedDefaultJobs();
 });
 
 // Middleware

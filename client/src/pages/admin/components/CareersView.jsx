@@ -141,7 +141,18 @@ const CareersView = () => {
   };
 
   return (
-    <div>
+    <div className="space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+        <div>
+          <h2 className="text-2xl font-bold" style={{ color: 'var(--text-main)' }}>
+            Candidate Applications
+          </h2>
+          <p className="text-sm mt-0.5" style={{ color: 'var(--text-muted)' }}>
+            Review applicants, update recruitment pipeline stages, and send candidate emails
+          </p>
+        </div>
+      </div>
+
       {loading ? (
         <div className="p-16 text-center text-sm" style={{ color: 'var(--text-muted)' }}>
           Loading career applications...

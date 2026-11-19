@@ -62,11 +62,11 @@ const benefits = [
   },
 ];
 
-const openings = [
-  { title: 'Frontend Developer', type: 'Full-time', location: 'Remote / India', comp: 'Competitive' },
-  { title: 'UI Designer', type: 'Full-time', location: 'Remote', comp: 'Performance Based' },
-  { title: 'Backend Engineer', type: 'Full-time', location: 'Hub (Gurgaon)', comp: 'High-Growth' },
-  { title: 'Intern', type: '6 Months', location: 'Remote', comp: 'PPO Potential' },
+const DEFAULT_OPENINGS = [
+  { title: 'Frontend Developer', type: 'Full-time', location: 'Remote / India', comp: 'Competitive', isActive: true },
+  { title: 'UI Designer', type: 'Full-time', location: 'Remote', comp: 'Performance Based', isActive: true },
+  { title: 'Backend Engineer', type: 'Full-time', location: 'Hub (Gurgaon)', comp: 'High-Growth', isActive: true },
+  { title: 'Intern', type: '6 Months', location: 'Remote', comp: 'PPO Potential', isActive: true },
 ];
 
 const INITIAL_FORM = {
@@ -99,6 +99,8 @@ const Careers = () => {
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [isLoading, setIsLoading] = useState(false);
   const [isFormEnabled, setIsFormEnabled] = useState(true);
+  const [jobs, setJobs] = useState(DEFAULT_OPENINGS);
+  const [isJobsLoaded, setIsJobsLoaded] = useState(false);
   const [fieldErrors, setFieldErrors] = useState(INITIAL_ERRORS);
   const [isSubmitted, setIsSubmitted] = useState(() => {
     try {
@@ -117,19 +119,42 @@ const Careers = () => {
   });
 
   useEffect(() => {
-    const fetchSettings = async () => {
+    let isMounted = true;
+    const fetchSettingsAndJobs = async () => {
       try {
         const response = await fetch(`${API_BASE}/api/status`);
         const data = await response.json();
-        if (data.success) {
-          setIsFormEnabled(data.isCareerFormEnabled);
+        if (data && data.success && isMounted) {
+          // Keep form enabled if the user has started typing, preventing form vanishing!
+          setIsFormEnabled(() => data.isCareerFormEnabled !== false);
+
+          if (Array.isArray(data.jobs) && data.jobs.length > 0) {
+            setJobs(data.jobs);
+          }
         }
       } catch (error) {
-        console.error('Failed to fetch form status');
+        console.error('Failed to fetch form status and jobs:', error);
+      } finally {
+        if (isMounted) setIsJobsLoaded(true);
       }
     };
-    fetchSettings();
+    fetchSettingsAndJobs();
+    return () => {
+      isMounted = false;
+    };
   }, []);
+
+  const activeJobs = jobs.filter((j) => j.isActive !== false);
+  const isFormActive = isFormEnabled && activeJobs.length > 0;
+
+  const handleApplyForRole = (roleTitle) => {
+    setFormData((prev) => ({ ...prev, role: roleTitle }));
+    if (fieldErrors.role) {
+      setFieldErrors((prev) => ({ ...prev, role: '' }));
+    }
+    const el = document.getElementById('apply');
+    el?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -423,67 +448,89 @@ const Careers = () => {
                 <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-main)', marginBottom: 8 }}>Open Opportunities</h2>
                 <p style={{ fontSize: 16, color: 'var(--text-muted)' }}>Find your next challenge in our growing team.</p>
               </div>
-              <div className="inline-flex items-center gap-2 rounded-full" style={{ padding: '6px 16px', background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(37,99,235,0.3)' }}>
-                <span style={{ fontSize: 12, fontWeight: 700, color: '#2563eb', letterSpacing: '0.08em' }}>4 OPENINGS</span>
+              <div className="inline-flex items-center gap-2 rounded-full" style={{ padding: '6px 16px', background: isFormActive ? 'rgba(37,99,235,0.12)' : 'rgba(100,116,139,0.12)', border: isFormActive ? '1px solid rgba(37,99,235,0.3)' : '1px solid rgba(100,116,139,0.25)' }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: isFormActive ? '#2563eb' : 'var(--text-muted)', letterSpacing: '0.08em' }}>
+                  {isFormActive ? `${activeJobs.length} ${activeJobs.length === 1 ? 'OPENING' : 'OPENINGS'}` : 'APPLICATIONS PAUSED'}
+                </span>
               </div>
             </motion.div>
 
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={VP}
-              variants={staggerContainer}
-              className="space-y-4"
-            >
-              {openings.map(({ title, type, location, comp }) => (
-                <motion.div
-                  key={title}
-                  variants={fadeUp}
-                  whileHover={{ borderColor: 'rgba(37,99,235,0.4)', x: 4 }}
-                  className="rounded-2xl flex flex-col md:flex-row items-center justify-between transition-all duration-300 group"
-                  style={{ padding: '28px 32px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 4px 20px var(--shadow-color)' }}
-                >
-                  <div className="mb-4 md:mb-0">
-                    <h3
-                      className="transition-colors duration-300"
-                      style={{ fontSize: 20, fontWeight: 600, color: 'var(--text-main)', marginBottom: 10 }}
-                    >
-                      {title}
-                    </h3>
-                    <div className="flex flex-wrap gap-3">
-                      {[
-                        { icon: 'work', text: type },
-                        { icon: 'location_on', text: location },
-                        { icon: 'payments', text: comp },
-                      ].map(({ icon, text }) => (
-                        <span key={text} className="flex items-center gap-1.5" style={{ fontSize: 14, color: 'var(--text-muted)' }}>
-                          <span className="material-symbols-outlined" style={{ fontSize: 16, color: '#2563eb' }}>{icon}</span>
-                          {text}
-                        </span>
-                      ))}
+            {!isFormActive ? (
+              <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={VP}
+                variants={fadeUp}
+                className="text-center rounded-2xl p-12"
+                style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)' }}
+              >
+                <div style={{ width: 64, height: 64, margin: '0 auto 20px', background: 'rgba(37,99,235,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Heart className="w-8 h-8" style={{ color: '#2563eb' }} />
+                </div>
+                <h3 style={{ fontSize: 22, fontWeight: 600, color: 'var(--text-main)', marginBottom: 10 }}>No Open Positions Currently</h3>
+                <p style={{ fontSize: 15, color: 'var(--text-muted)', maxWidth: 520, margin: '0 auto' }}>
+                  We are currently fully staffed and not accepting new applications. Please check back later or subscribe to our newsletter for updates on future openings.
+                </p>
+              </motion.div>
+            ) : (
+              <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={VP}
+                variants={staggerContainer}
+                className="space-y-4"
+              >
+                {activeJobs.map(({ _id, title, type, location, comp }) => (
+                  <motion.div
+                    key={_id || title}
+                    variants={fadeUp}
+                    whileHover={{ borderColor: 'rgba(37,99,235,0.4)', x: 4 }}
+                    className="rounded-2xl flex flex-col md:flex-row items-center justify-between transition-all duration-300 group"
+                    style={{ padding: '28px 32px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: '0 4px 20px var(--shadow-color)' }}
+                  >
+                    <div className="mb-4 md:mb-0">
+                      <h3
+                        className="transition-colors duration-300"
+                        style={{ fontSize: 20, fontWeight: 600, color: 'var(--text-main)', marginBottom: 10 }}
+                      >
+                        {title}
+                      </h3>
+                      <div className="flex flex-wrap gap-3">
+                        {[
+                          { icon: 'work', text: type },
+                          { icon: 'location_on', text: location },
+                          { icon: 'payments', text: comp },
+                        ].filter(item => item.text).map(({ icon, text }) => (
+                          <span key={text} className="flex items-center gap-1.5" style={{ fontSize: 14, color: 'var(--text-muted)' }}>
+                            <span className="material-symbols-outlined" style={{ fontSize: 16, color: '#2563eb' }}>{icon}</span>
+                            {text}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  <motion.div whileTap={{ scale: 0.96 }} className="w-full md:w-auto text-center">
-                    <a
-                      href="#apply"
-                      className="w-full md:w-auto text-center rounded-xl font-semibold transition-all duration-200"
-                      style={{ padding: '12px 28px', fontSize: 14, background: '#2563eb', color: '#eeefff', display: 'inline-block' }}
-                      onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 0 24px rgba(37,99,235,0.4)'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none'; }}
-                    >
-                      Apply Now
-                    </a>
+                    <motion.div whileTap={{ scale: 0.96 }} className="w-full md:w-auto text-center">
+                      <button
+                        type="button"
+                        onClick={() => handleApplyForRole(title)}
+                        className="w-full md:w-auto text-center rounded-xl font-semibold transition-all duration-200 cursor-pointer"
+                        style={{ padding: '12px 28px', fontSize: 14, background: '#2563eb', color: '#eeefff', display: 'inline-block' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 0 24px rgba(37,99,235,0.4)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none'; }}
+                      >
+                        Apply Now
+                      </button>
+                    </motion.div>
                   </motion.div>
-                </motion.div>
-              ))}
-            </motion.div>
+                ))}
+              </motion.div>
+            )}
           </div>
         </section>
 
         {/* ── Application Form ── */}
         <section id="apply" style={{ background: 'var(--bg-alt)', padding: '80px 32px', borderTop: '1px solid var(--border-color-subtle)' }} className="transition-colors duration-300">
           <div style={{ maxWidth: 720, margin: '0 auto' }}>
-            {isFormEnabled ? (
+            {isFormActive ? (
             isSubmitted ? (
               /* ── Success Card ── */
               <motion.div
@@ -565,6 +612,22 @@ const Careers = () => {
                   >
                     <span style={{ fontSize: 13, color: '#10b981', fontWeight: 600 }}>📬 Check your inbox for a confirmation email</span>
                   </motion.div>
+
+                  <div className="mt-6">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        try {
+                          localStorage.removeItem('rogerex_career_submitted');
+                        } catch {}
+                        setIsSubmitted(false);
+                      }}
+                      className="text-xs font-medium cursor-pointer underline transition-opacity hover:opacity-80"
+                      style={{ color: 'var(--text-muted)' }}
+                    >
+                      Submit another application
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ) : (
@@ -650,12 +713,15 @@ const Careers = () => {
                         name="role" value={formData.role} onChange={handleChange}
                         style={{ ...getInputStyle('role'), appearance: 'none', cursor: 'pointer' }}
                       >
-                        <option value="">Select a role...</option>
-                        <option value="Frontend Developer">Frontend Developer</option>
-                        <option value="UI Designer">UI Designer</option>
-                        <option value="Backend Engineer">Backend Engineer</option>
-                        <option value="Intern">Intern</option>
-                        <option value="Frontend Developer Intern">Frontend Developer Intern</option>
+                        <option value="">Select an active role...</option>
+                        {activeJobs.map((j) => (
+                          <option key={j._id || j.title} value={j.title}>
+                            {j.title} {j.type ? `(${j.type})` : ''}
+                          </option>
+                        ))}
+                        {formData.role && !activeJobs.some((j) => j.title === formData.role) && (
+                          <option value={formData.role}>{formData.role}</option>
+                        )}
                       </select>
                       {fieldErrors.role && <p style={errorStyle}>{fieldErrors.role}</p>}
                     </div>

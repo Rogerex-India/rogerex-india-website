@@ -1,4 +1,6 @@
 const Career = require("../models/Career");
+const Settings = require("../models/Settings");
+const Job = require("../models/Job");
 const {
   isValidEmail,
   isValidPhone,
@@ -12,6 +14,15 @@ const {
 // @access  Public
 const submitCareer = async (req, res) => {
   try {
+    // Check if career form is enabled in Settings
+    const settings = await Settings.findOne();
+    if (settings && settings.isCareerFormEnabled === false) {
+      return res.status(403).json({
+        success: false,
+        message: "Applications are currently closed. Please check back later.",
+      });
+    }
+
     const {
       name,
       email,
